@@ -1,0 +1,8 @@
+{
+	"BuildId": "14830424",
+	"Modules": 
+	{
+		"UnLuaDefaultParamCollector": "UnrealHeaderTool-UnLuaDefaultParamCollector.dll",
+		"UnLuaIntelliSense": "UnrealHeaderTool-UnLuaIntelliSense.dll"
+	}
+}

@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-UnLuaEditor.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\TPSProject\Intermediate\Build\Win64\TPSProjectEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.obj"
+"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.cpp.obj"
+"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp.obj"
+"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Default.rc2.res"
+/OUT:"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\UE4Editor-UnLuaEditor.lib"
+/INCLUDE:IMPLEMENT_MODULE_UnLuaEditor
