@@ -29,8 +29,21 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
 
---function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
---end
+function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
+	print("begin overlap----------------------")
+
+	if (OtherActor:ActorHasTag("DeadLedge")) then
+		print("You are dead!")
+	end
+
+	if (OtherActor:ActorHasTag("Destination")) then
+		print("Destination!")
+	end
+
+	if (OtherActor:ActorHasTag("RecordPoint")) then
+		print("RecordPoint!")
+	end
+end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
