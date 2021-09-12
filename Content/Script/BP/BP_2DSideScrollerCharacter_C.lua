@@ -17,7 +17,11 @@ local BP_2DSideScrollerCharacter_C = Class()
 --end
 
 function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
-    print("begin play-----------")
+	local OriginGameMode = UGameplayStatics.GetGameMode(self:GetWorld())
+	self.GameMode = OriginGameMode:Cast(UE4.ABP_MyTwoDGameDemoGameMode_C)
+	-- print(OriginGameMode)
+	-- print(self.GameMode)
+	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
@@ -30,18 +34,28 @@ end
 --end
 
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
-	print("begin overlap----------------------")
-
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
+		self:K2_DestroyActor()
 	end
 
 	if (OtherActor:ActorHasTag("Destination")) then
-		print("Destination!")
+		self.GameMode:EnterNextLevel()
+		self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+		print("Reach destination!")
 	end
 
-	if (OtherActor:ActorHasTag("RecordPoint")) then
-		print("RecordPoint!")
+	if (OtherActor:ActorHasTag("SavePoint")) then
+		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
+		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
+		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
+		self.GameMode:UpdateSavePoint(SavePointIndexInt)
+		-- print(SavePointIndexInt)
+		-- print(ObjectName)
+		-- print(NameParseArray:Length())
+		-- print(NameParseArray:Get(1))
+		-- print(NameParseArray:Get(2))
+		print("Save point!")
 	end
 end
 
