@@ -9,6 +9,10 @@
 require "UnLua"
 
 local BP_2DSideScrollerCharacter_C = Class()
+local MINIGameState = {}
+MINIGameState.BACK = 0
+MINIGameState.RUN = 0
+MINIGameState.JUMP = 0
 
 --function BP_2DSideScrollerCharacter_C:Initialize(Initializer)
 --end
@@ -50,11 +54,12 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
 		self.GameMode:UpdateSavePoint(SavePointIndexInt)
-		-- print(SavePointIndexInt)
-		-- print(ObjectName)
-		-- print(NameParseArray:Length())
-		-- print(NameParseArray:Get(1))
-		-- print(NameParseArray:Get(2))
+		print("------------------------------")
+		print(SavePointIndexInt)
+		print(ObjectName)
+		print(NameParseArray:Length())
+		print(NameParseArray:Get(1))
+		print(NameParseArray:Get(2))
 		print("Save point!")
 	end
 end
@@ -62,21 +67,42 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
 
+function BP_2DSideScrollerCharacter_C:JumpStart()
+	self.SprotState = MINIGameState.Jump
+	print("begin jump")
+	self:Jump()
+end
+
+function BP_2DSideScrollerCharacter_C:JumpStop()
+	print("stop jump")
+	self:StopJumping()
+end
+
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	-- Apply the input to the character motion
 	-- AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
-    if (0.0 ~= fAxisValue) then
+    if fAxisValue < 0 then
+		local t0 = self:GetTS()
+		print("move back ",t0)
+		self.SprotState = MINIGameState.BACK
+		self:AddMovementInput(UE4.FVector(2, 0, 0), fAxisValue, false)
+	elseif fAxisValue > 0 then
+		print("move run")
+		self.SprotState = MINIGameState.RUN
 		self:AddMovementInput(UE4.FVector(2, 0, 0), fAxisValue, false)
 	end
 end
 
 function BP_2DSideScrollerCharacter_C:TouchStarted()
 	-- Jump on any touch
+	self.SprotState = MINIGameState.Jump
+	print("begin jump")
 	self:Jump()
 end
 
 function BP_2DSideScrollerCharacter_C:TouchStopped()
 	--Cease jumping once touch stopped
+	print("stop jump")
 	self:StopJumping()
 end
 
