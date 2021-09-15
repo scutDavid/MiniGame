@@ -6,17 +6,6 @@
 #include "GameFramework/SaveGame.h"
 #include "MINISaveGame.generated.h"
 
-// 当前玩家操作
-UENUM(BlueprintType)
-enum class MINIGameState : uint8
-{
-	// 游戏状态 FORWARD:前进 ,BACK: 后退 ,WAIT: 停止 ,JUMP: 跳跃,RUN: 冲刺
-	FORWARD  UMETA(DisplayName = "FORWARD"),
-	BACK UMETA(DisplayName = "BACK"),
-	WAIT UMETA(DisplayName = "WAIT"),
-	JUMP UMETA(DisplayName = "JUMP"),
-	RUN UMETA(DisplayName = "RUN"),
-};
 
 // 记录点处玩家状态
 USTRUCT(BlueprintType)
@@ -27,13 +16,19 @@ struct FPlayerStateInfo
 	// 使用 UPROPERTY 修饰符可以更方便的在蓝图中设置
 	// 速度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
-	float PlayerVelocity;
+	FVector PlayerVelocity;
 	// 位置
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
 	FVector PlayerLocation;
 	// 当前玩家状态
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
-	MINIGameState PlayerState;
+	bool isForward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	bool isBack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	bool isJump;
 };
 
 

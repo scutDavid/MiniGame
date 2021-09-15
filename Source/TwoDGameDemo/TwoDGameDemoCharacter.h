@@ -43,18 +43,15 @@ protected:
 	/** Called to choose the correct animation to play based on the character's movement state */
 	void UpdateAnimation();
 
-	UFUNCTION( BlueprintCallable)
-	int GetTS();
-
 	/** Called for side to side input */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void MoveRight(float Value);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void JumpStart();
+	void MyJump();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void JumpStop();
+	void MyStopJumping();
 
 	void UpdateCharacter();
 

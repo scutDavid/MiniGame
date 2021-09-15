@@ -9,10 +9,6 @@
 require "UnLua"
 
 local BP_2DSideScrollerCharacter_C = Class()
-local MINIGameState = {}
-MINIGameState.BACK = 0
-MINIGameState.RUN = 0
-MINIGameState.JUMP = 0
 
 --function BP_2DSideScrollerCharacter_C:Initialize(Initializer)
 --end
@@ -25,6 +21,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.GameMode = OriginGameMode:Cast(UE4.ABP_MyTwoDGameDemoGameMode_C)
 	-- print(OriginGameMode)
 	-- print(self.GameMode)
+	self.isJump = false
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 end
 
@@ -54,12 +51,11 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
 		self.GameMode:UpdateSavePoint(SavePointIndexInt)
-		print("------------------------------")
-		print(SavePointIndexInt)
-		print(ObjectName)
-		print(NameParseArray:Length())
-		print(NameParseArray:Get(1))
-		print(NameParseArray:Get(2))
+		-- print(SavePointIndexInt)
+		-- print(ObjectName)
+		-- print(NameParseArray:Length())
+		-- print(NameParseArray:Get(1))
+		-- print(NameParseArray:Get(2))
 		print("Save point!")
 	end
 end
@@ -67,43 +63,60 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
 
-function BP_2DSideScrollerCharacter_C:JumpStart()
-	self.SprotState = MINIGameState.Jump
-	print("begin jump")
-	self:Jump()
-end
-
-function BP_2DSideScrollerCharacter_C:JumpStop()
-	print("stop jump")
-	self:StopJumping()
-end
-
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	-- Apply the input to the character motion
 	-- AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
-    if fAxisValue < 0 then
-		local t0 = self:GetTS()
-		print("move back ",t0)
-		self.SprotState = MINIGameState.BACK
+    if (0.0 ~= fAxisValue) then
 		self:AddMovementInput(UE4.FVector(2, 0, 0), fAxisValue, false)
-	elseif fAxisValue > 0 then
-		print("move run")
-		self.SprotState = MINIGameState.RUN
-		self:AddMovementInput(UE4.FVector(2, 0, 0), fAxisValue, false)
+	end
+
+	self.isPreForward = self.isForward
+	self.isPreBack = self.isBack
+	if fAxisValue > 0.0 then
+		self.isForward = true
+		self.isBack = false
+	elseif fAxisValue < 0.0 then
+		self.isForward = false
+		self.isBack = true
+	else
+		self.isForward = false
+		self.isBack = false
+	end
+
+	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
+		print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
 	end
 end
 
-function BP_2DSideScrollerCharacter_C:TouchStarted()
-	-- Jump on any touch
-	self.SprotState = MINIGameState.Jump
-	print("begin jump")
+function BP_2DSideScrollerCharacter_C:MyJump()
+	self.isPreJump = self.isJump
+	self.isJump = true
 	self:Jump()
+	if (self.isPreJump ~= self.isJump) then
+		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+	end
 end
 
-function BP_2DSideScrollerCharacter_C:TouchStopped()
-	--Cease jumping once touch stopped
-	print("stop jump")
+function BP_2DSideScrollerCharacter_C:MyStopJumping()
+	self.isPreJump = self.isJump
+	self.isJump = false
 	self:StopJumping()
+	if (self.isPreJump ~= self.isJump) then
+		print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+	end
 end
+
+-- function BP_2DSideScrollerCharacter_C:TouchStarted()
+-- 	-- Jump on any touch
+-- 	self:Jump()
+-- end
+
+-- function BP_2DSideScrollerCharacter_C:TouchStopped()
+-- 	--Cease jumping once touch stopped
+-- 	self:StopJumping()
+-- end
 
 return BP_2DSideScrollerCharacter_C

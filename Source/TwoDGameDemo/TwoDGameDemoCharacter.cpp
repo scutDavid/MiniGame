@@ -8,8 +8,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-#include <chrono>
-#include <sys/time.h>
 #include "Camera/CameraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
@@ -108,8 +106,8 @@ void ATwoDGameDemoCharacter::Tick(float DeltaSeconds)
 void ATwoDGameDemoCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Note: the 'Jump' action and the 'MoveRight' axis are bound to actual keys/buttons/sticks in DefaultInput.ini (editable from Project Settings..Input)
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ATwoDGameDemoCharacter::JumpStart);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ATwoDGameDemoCharacter::JumpStop);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ATwoDGameDemoCharacter::MyJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ATwoDGameDemoCharacter::MyStopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATwoDGameDemoCharacter::MoveRight);
 
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATwoDGameDemoCharacter::TouchStarted);
@@ -124,27 +122,17 @@ void ATwoDGameDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 //	AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
 //}
 //
-//void ATwoDGameDemoCharacter::MyJump()
+//void ATwoDGameDemoCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
 //{
-//	JumpStart();
 //	// Jump on any touch
 //	Jump();
 //}
 //
-//void ATwoDGameDemoCharacter::MyJumpStop()
+//void ATwoDGameDemoCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location)
 //{
 //	// Cease jumping once touch stopped
 //	StopJumping();
-//	JumpStop();
 //}
-
-
-
-int ATwoDGameDemoCharacter::GetTS() {
-	auto c_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-	return c_time.count();
-}
-
 
 void ATwoDGameDemoCharacter::UpdateCharacter()
 {
