@@ -52,7 +52,7 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void MyStopJumping();
-
+	UFUNCTION(BlueprintCallable)
 	void UpdateCharacter();
 
 	/** Handle touch inputs. */
