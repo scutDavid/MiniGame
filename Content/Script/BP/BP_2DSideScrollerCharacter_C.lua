@@ -23,16 +23,26 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	-- print(self.GameMode)
 	self.isJump = false
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
 end
 
---function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
---end
+function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
+	if self.UpdateSaveTaskTimer ~= nil then
+		print("cancel timer!!!!!!!!!")
+        UE4.UKismetSystemLibrary.K2_ClearAndInvalidateTimerHandle(self,self.UpdateSaveTaskTimer)
+    end
+	self.GameMode:SaveMINISaveGame()
+	print("SaveMINISaveGame Success!!!!!!!!!")
+end
 
 -- function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
 -- end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
+function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
+	self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+end
 
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
@@ -84,7 +94,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	end
 
 	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
-		print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
+		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
 	end
 end
@@ -94,7 +104,7 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	self.isJump = true
 	self:Jump()
 	if (self.isPreJump ~= self.isJump) then
-		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		-- print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
 	end
 end
@@ -104,7 +114,7 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	self.isJump = false
 	self:StopJumping()
 	if (self.isPreJump ~= self.isJump) then
-		print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		-- print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
 	end
 end

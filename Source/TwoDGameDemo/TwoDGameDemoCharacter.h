@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	class UPaperFlipbook* IdleAnimation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
+	FString Name;
+
 	/** Called to choose the correct animation to play based on the character's movement state */
 	void UpdateAnimation();
 

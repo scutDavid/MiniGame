@@ -1,5 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+#include "Engine/Engine.h"
 #include "TwoDGameDemoCharacter.h"
 #include "PaperFlipbookComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -95,8 +96,8 @@ void ATwoDGameDemoCharacter::UpdateAnimation()
 void ATwoDGameDemoCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
 	UpdateCharacter();	
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Yor name is %s"), *Name));
 }
 
 
@@ -113,26 +114,6 @@ void ATwoDGameDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATwoDGameDemoCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ATwoDGameDemoCharacter::TouchStopped);
 }
-
-//void ATwoDGameDemoCharacter::MoveRight(float Value)
-//{
-//	/*UpdateChar();*/
-//
-//	// Apply the input to the character motion
-//	AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
-//}
-//
-//void ATwoDGameDemoCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	// Jump on any touch
-//	Jump();
-//}
-//
-//void ATwoDGameDemoCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	// Cease jumping once touch stopped
-//	StopJumping();
-//}
 
 void ATwoDGameDemoCharacter::UpdateCharacter()
 {
