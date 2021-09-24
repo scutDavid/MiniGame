@@ -21,7 +21,7 @@ function HealthBar_C:Construct()
 end
 
 function HealthBar_C:Tick(MyGeometry, InDeltaTime)
-    
+    --
 end
 
 return HealthBar_C

@@ -72,8 +72,21 @@ local BP_Ghost_C = Class()
 --function BP_Ghost_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
 
---function BP_Ghost_C:ReceiveActorBeginOverlap(OtherActor)
---end
+function BP_Ghost_C:ReceiveActorBeginOverlap(OtherActor)
+	if (OtherActor:ActorHasTag("Trigger")) then
+		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
+		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
+		local TriggerIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
+		self.GameMode:UpdateTriggerIndex(false, TriggerIndexInt)
+		-- print(SavePointIndexInt)
+		print(ObjectName)
+		print(NameParseArray:Length())
+		print(NameParseArray:Get(1))
+		print(NameParseArray:Get(2))
+        print(TriggerIndexInt)
+		print("Trigger point!")
+	end
+end
 
 --function BP_Ghost_C:ReceiveActorEndOverlap(OtherActor)
 --end

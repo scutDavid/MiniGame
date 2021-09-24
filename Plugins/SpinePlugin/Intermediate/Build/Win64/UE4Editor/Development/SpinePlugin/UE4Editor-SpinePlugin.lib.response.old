@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-SpinePlugin.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\MiniGame\UnrealEngine-release\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h.obj"
+"E:\MiniGame\MiniGame-main\Plugins\SpinePlugin\Intermediate\Build\Win64\UE4Editor\Development\SpinePlugin\Module.SpinePlugin.cpp.obj"
+"E:\MiniGame\MiniGame-main\Plugins\SpinePlugin\Intermediate\Build\Win64\UE4Editor\Development\SpinePlugin\Module.SpinePlugin.gen.cpp.obj"
+"E:\MiniGame\UnrealEngine-release\Engine\Intermediate\Build\Win64\UE4Editor\Development\Default.rc2.res"
+/OUT:"E:\MiniGame\MiniGame-main\Plugins\SpinePlugin\Intermediate\Build\Win64\UE4Editor\Development\SpinePlugin\UE4Editor-SpinePlugin.lib"
