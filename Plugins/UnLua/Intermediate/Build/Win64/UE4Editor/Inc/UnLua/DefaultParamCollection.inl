@@ -1252,6 +1252,12 @@ PC->Parameters.Add(TEXT("TileHeight"), new FIntParamValue(32));
 PC->Parameters.Add(TEXT("PixelsPerUnrealUnit"), new FFloatParamValue(1.000000f));
 PC->Parameters.Add(TEXT("bCreateLayer"), new FBoolParamValue(true));
 
+FC = &GDefaultParamCollection.Add(TEXT("UKismetProceduralMeshLibrary"));
+PC = &FC->Functions.Add(TEXT("CreateGridMeshSplit"));
+PC->Parameters.Add(TEXT("GridSpacing"), new FFloatParamValue(16.000000f));
+PC = &FC->Functions.Add(TEXT("CreateGridMeshWelded"));
+PC->Parameters.Add(TEXT("GridSpacing"), new FFloatParamValue(16.000000f));
+
 FC = &GDefaultParamCollection.Add(TEXT("UVariant"));
 PC = &FC->Functions.Add(TEXT("SetThumbnailFromCamera"));
 PC->Parameters.Add(TEXT("FOVDegrees"), new FFloatParamValue(50.000000f));
@@ -1269,12 +1275,6 @@ PC = &FC->Functions.Add(TEXT("TakeGameplayAutomationScreenshot"));
 PC->Parameters.Add(TEXT("MaxGlobalError"), new FFloatParamValue(0.020000f));
 PC->Parameters.Add(TEXT("MaxLocalError"), new FFloatParamValue(0.120000f));
 PC->Parameters.Add(TEXT("MapNameOverride"), new FStringParamValue(TEXT("")));
-
-FC = &GDefaultParamCollection.Add(TEXT("UKismetProceduralMeshLibrary"));
-PC = &FC->Functions.Add(TEXT("CreateGridMeshSplit"));
-PC->Parameters.Add(TEXT("GridSpacing"), new FFloatParamValue(16.000000f));
-PC = &FC->Functions.Add(TEXT("CreateGridMeshWelded"));
-PC->Parameters.Add(TEXT("GridSpacing"), new FFloatParamValue(16.000000f));
 
 FC = &GDefaultParamCollection.Add(TEXT("UNiagaraFunctionLibrary"));
 PC = &FC->Functions.Add(TEXT("SpawnSystemAttached"));
@@ -1361,4 +1361,14 @@ PC->Parameters.Add(TEXT("Duration"), new FFloatParamValue(-1.000000f));
 FC = &GDefaultParamCollection.Add(TEXT("USynthSamplePlayer"));
 PC = &FC->Functions.Add(TEXT("SeekToTime"));
 PC->Parameters.Add(TEXT("bWrap"), new FBoolParamValue(true));
+
+FC = &GDefaultParamCollection.Add(TEXT("USpineWidget"));
+PC = &FC->Functions.Add(TEXT("Tick"));
+PC->Parameters.Add(TEXT("CallDelegates"), new FBoolParamValue(true));
+PC = &FC->Functions.Add(TEXT("SetPlaybackTime"));
+PC->Parameters.Add(TEXT("bCallDelegates"), new FBoolParamValue(true));
+
+FC = &GDefaultParamCollection.Add(TEXT("USpineSkeletonAnimationComponent"));
+PC = &FC->Functions.Add(TEXT("SetPlaybackTime"));
+PC->Parameters.Add(TEXT("bCallDelegates"), new FBoolParamValue(true));
 
