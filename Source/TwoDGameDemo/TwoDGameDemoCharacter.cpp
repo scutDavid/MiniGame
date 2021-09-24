@@ -112,6 +112,7 @@ void ATwoDGameDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATwoDGameDemoCharacter::MoveRight);
 
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATwoDGameDemoCharacter::TouchStarted);
+	PlayerInputComponent->BindTouch(IE_Repeat, this, &ATwoDGameDemoCharacter::TouchRepeat);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ATwoDGameDemoCharacter::TouchStopped);
 }
 

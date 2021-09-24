@@ -7,9 +7,9 @@
 --
 
 require "UnLua"
-
 local BP_2DSideScrollerCharacter_C = Class()
-
+local List = require "FixedLenQueue"
+local XList = List:new(3)
 --function BP_2DSideScrollerCharacter_C:Initialize(Initializer)
 --end
 
@@ -35,8 +35,14 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 	print("SaveMINISaveGame Success!!!!!!!!!")
 end
 
--- function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
--- end
+function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
+	if self.bMoveRight == true then
+		self:MoveRight(1)
+	elseif self.bMoveRight == false then
+		self:MoveRight(-1)
+	end
+
+end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
@@ -119,14 +125,47 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	end
 end
 
--- function BP_2DSideScrollerCharacter_C:TouchStarted()
--- 	-- Jump on any touch
--- 	self:Jump()
--- end
+function BP_2DSideScrollerCharacter_C:TouchStarted(FingerId, Location)
+	-- Jump on any touch
+	self.LastTouchLocation  = Location
+	self.PressTS = UE4.UKismetMathLibrary.Now()
+	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
+	-- self:Jump()
+end
 
--- function BP_2DSideScrollerCharacter_C:TouchStopped()
--- 	--Cease jumping once touch stopped
--- 	self:StopJumping()
--- end
+function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
+	-- if self.PressTS == 0 then
+	-- 	return
+	-- end
+	-- self.CurrentTS = UE4.UKismetMathLibrary.Now()
+	-- local delta = UE4.UKismetMathLibrary.Subtract_DateTimeDateTime(self.CurrentTS, self.PressTS)
+    -- local deltamillisec = UE4.UKismetMathLibrary.GetTotalMilliseconds(delta)
+	-- if deltamillisec > 250 then
+		-- print("repeat touch FingerId = ",deltamillisec,FingerId,Location.X, Location.Y, Location.Z)
+		-- self.PressTS = 0
+	-- end
+	XList:push(Location.X)
+	if XList.length == 3 then
+		print(XList[XList.first],XList[XList.last])
+		if XList[XList.last] - XList[XList.first] > 5 then 
+			print("move right",Location.X, Location.Y)
+			self.bMoveRight = true
+		elseif XList[XList.first] - XList[XList.last] > 5 then
+			print("move left",Location.X, Location.Y)
+			self.bMoveRight = false
+		end
+	end
+	-- print("repeat touch FingerId = ",FingerId,self.LastTouchLocation.X,self.LastTouchLocation.Y,Location.X, Location.Y)
+	-- self.LastTouchLocation  = Location
+	-- self:Jump()
+end
+
+function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
+	--Cease jumping once touch stopped
+	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
+	self.PressTS = 0
+	XList:clear()
+	-- self:StopJumping()
+end
 
 return BP_2DSideScrollerCharacter_C

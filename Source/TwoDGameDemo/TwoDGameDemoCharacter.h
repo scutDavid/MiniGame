@@ -62,6 +62,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void TouchRepeat(const ETouchIndex::Type FingerIndex, const FVector Location);
+
 	/** Handle touch stop event. */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location);
