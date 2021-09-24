@@ -68,6 +68,19 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		-- print(NameParseArray:Get(2))
 		print("Save point!")
 	end
+
+	if (OtherActor:ActorHasTag("Trigger")) then
+		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
+		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
+		local TriggerIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
+		self.GameMode:UpdateTriggerIndex(true, TriggerIndexInt)
+		-- print(SavePointIndexInt)
+		-- print(ObjectName)
+		-- print(NameParseArray:Length())
+		-- print(NameParseArray:Get(1))
+		-- print(NameParseArray:Get(2))
+		print("Trigger point!")
+	end
 end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
