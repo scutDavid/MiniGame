@@ -24,7 +24,6 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.isJump = false
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
-	self.SpineSkeletonAnimation:SetAnimation(0.0, "idle", true)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
@@ -94,14 +93,6 @@ end
 --end
 
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
-	if self.CharacterMovement:IsFalling() == false and self.isJump == false and (not self.isForward) and (not self.isBack) then
-		if fAxisValue ~= 0.0 then
-			self.SpineSkeletonAnimation:SetAnimation(0.0, "run", true)
-		else
-			self.SpineSkeletonAnimation:SetAnimation(0.0, "idle", true)
-		end
-	end
-
 	-- Apply the input to the character motion
 	-- AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
     if (0.0 ~= fAxisValue) then
@@ -128,7 +119,6 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 end
 
 function BP_2DSideScrollerCharacter_C:MyJump()
-	self.SpineSkeletonAnimation:SetAnimation(0.0, "jump", true)
 	self.isPreJump = self.isJump
 	self.isJump = true
 	self:Jump()
