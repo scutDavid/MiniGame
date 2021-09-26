@@ -24,6 +24,9 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.isJump = false
 	self.AccaAccumulateTime = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+	self.PC = UE4.UGameplayStatics.GetPlayerController(self, 0)
+	self.ScreenX,self.ScreenY = self.PC:GetViewportSize()
+
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
 end
 
@@ -156,7 +159,9 @@ end
 
 function BP_2DSideScrollerCharacter_C:TouchStarted(FingerId, Location)
 	-- Jump on any touch
-	self.LastTouchLocation  = Location
+	if Location.X > self.ScreenX/2 then
+		self:MyJump()
+	end
 	self.PressTS = UE4.UKismetMathLibrary.Now()
 	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	-- self:Jump()
@@ -173,14 +178,16 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		-- print("repeat touch FingerId = ",deltamillisec,FingerId,Location.X, Location.Y, Location.Z)
 		-- self.PressTS = 0
 	-- end
-	XList:push(Location.X)
-	if XList.length == 3 then
-		if XList[XList.last] - XList[XList.first] > 5 then 
-			print("move right",Location.X, Location.Y)
-			self.bMoveRight = true
-		elseif XList[XList.first] - XList[XList.last] > 5 then
-			print("move left",Location.X, Location.Y)
-			self.bMoveRight = false
+	if Location.X < self.ScreenX/2 then
+		XList:push(Location.X)
+		if XList.length == 3 then
+			if XList[XList.last] - XList[XList.first] > 5 then 
+				print("move right",Location.X, Location.Y)
+				self.bMoveRight = true
+			elseif XList[XList.first] - XList[XList.last] > 5 then
+				print("move left",Location.X, Location.Y)
+				self.bMoveRight = false
+			end
 		end
 	end
 	-- print("repeat touch FingerId = ",FingerId,self.LastTouchLocation.X,self.LastTouchLocation.Y,Location.X, Location.Y)
@@ -189,6 +196,9 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 end
 
 function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
+	if Location.X > self.ScreenX/2 then
+		self:MyStopJumping()
+	end
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XList:clear()
