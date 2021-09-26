@@ -40,10 +40,12 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if self.isForward or self.isBack then
-		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
-		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+	if self.bMoveRight == true then
+		self:MoveRight(1)
+	elseif self.bMoveRight == false then
+		self:MoveRight(-1)
 	end
+
 end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
