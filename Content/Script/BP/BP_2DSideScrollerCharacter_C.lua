@@ -22,7 +22,11 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	-- print(OriginGameMode)
 	-- print(self.GameMode)
 	self.isJump = false
+	self.AccaAccumulateTime = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+	self.PC = UE4.UGameplayStatics.GetPlayerController(self, 0)
+	self.ScreenX,self.ScreenY = self.PC:GetViewportSize()
+
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
 end
 
@@ -36,13 +40,10 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-
-	if self.bMoveRight == true then
-		self:MoveRight(1)
-	elseif self.bMoveRight == false then
-		self:MoveRight(-1)
+	if self.isForward or self.isBack then
+		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
+		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
-
 end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
@@ -94,27 +95,41 @@ end
 --end
 
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
-	-- Apply the input to the character motion
-	-- AddMovementInput(FVector(1.0f, 0.0f, 0.0f), Value);
-    if (0.0 ~= fAxisValue) then
-		self:AddMovementInput(UE4.FVector(2, 0, 0), fAxisValue, false)
+	self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+	if self.LastUpdateTime  then 
+		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
+	end
+	self.LastUpdateTime = self.CurrentUpdateTime
+
+	local inputValue = fAxisValue
+	if self.bMoveRight == true then
+		inputValue = 1.0
+	elseif self.bMoveRight == false then
+		inputValue = -1.0
+	end
+
+    if (0.0 ~= inputValue) then
+		self:AddMovementInput(UE4.FVector(2, 0, 0), inputValue, false)
+		-- print("self.AccaAccumulateTime = ",self.AccaAccumulateTime)
 	end
 
 	self.isPreForward = self.isForward
 	self.isPreBack = self.isBack
-	if fAxisValue > 0.0 then
+	if inputValue > 0.0 then
 		self.isForward = true
 		self.isBack = false
-	elseif fAxisValue < 0.0 then
+	elseif inputValue < 0.0 then
 		self.isForward = false
 		self.isBack = true
 	else
 		self.isForward = false
 		self.isBack = false
+		self.AccaAccumulateTime = 0
 	end
 
 	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
+		self.AccaAccumulateTime = 0
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
 	end
 end
@@ -168,7 +183,9 @@ end
 
 function BP_2DSideScrollerCharacter_C:TouchStarted(FingerId, Location)
 	-- Jump on any touch
-	self.LastTouchLocation  = Location
+	if Location.X > self.ScreenX/2 then
+		self:MyJump()
+	end
 	self.PressTS = UE4.UKismetMathLibrary.Now()
 	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	-- self:Jump()
@@ -185,15 +202,16 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		-- print("repeat touch FingerId = ",deltamillisec,FingerId,Location.X, Location.Y, Location.Z)
 		-- self.PressTS = 0
 	-- end
-	XList:push(Location.X)
-	if XList.length == 3 then
-		print(XList[XList.first],XList[XList.last])
-		if XList[XList.last] - XList[XList.first] > 5 then 
-			print("move right",Location.X, Location.Y)
-			self.bMoveRight = true
-		elseif XList[XList.first] - XList[XList.last] > 5 then
-			print("move left",Location.X, Location.Y)
-			self.bMoveRight = false
+	if Location.X < self.ScreenX/2 then
+		XList:push(Location.X)
+		if XList.length == 3 then
+			if XList[XList.last] - XList[XList.first] > 5 then 
+				print("move right",Location.X, Location.Y)
+				self.bMoveRight = true
+			elseif XList[XList.first] - XList[XList.last] > 5 then
+				print("move left",Location.X, Location.Y)
+				self.bMoveRight = false
+			end
 		end
 	end
 	-- print("repeat touch FingerId = ",FingerId,self.LastTouchLocation.X,self.LastTouchLocation.Y,Location.X, Location.Y)
@@ -202,11 +220,13 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 end
 
 function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
-	--Cease jumping once touch stopped
+	if Location.X > self.ScreenX/2 then
+		self:MyStopJumping()
+	end
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XList:clear()
-	-- self:StopJumping()
+	self.bMoveRight = nil
 end
 
 return BP_2DSideScrollerCharacter_C
