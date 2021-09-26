@@ -82,11 +82,17 @@ ATwoDGameDemoCharacter::ATwoDGameDemoCharacter()
 
 void ATwoDGameDemoCharacter::UpdateAnimation()
 {
-	const FVector PlayerVelocity = GetVelocity();
-	const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
+	UPaperFlipbook* DesiredAnimation = nullptr;
+	if (GetCharacterMovement() -> IsFalling()) {
+		DesiredAnimation = JumpAnimation;
+	}
+	else {
+		const FVector PlayerVelocity = GetVelocity();
+		const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
 
-	// Are we moving or standing still?
-	UPaperFlipbook* DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleAnimation;
+		DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleAnimation;
+	}
+
 	if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
 	{
 		GetSprite()->SetFlipbook(DesiredAnimation);
