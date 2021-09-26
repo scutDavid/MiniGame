@@ -100,4 +100,31 @@ function BP_Ghost_C:MoveAfter5Meter()
     print("distance = ---------------------",distance,TableToString(playerPos))
 end
 
+function BP_Ghost_C:GhostJump()
+	if self.isFirstJump == true then
+		if self.isSecondJump == false then
+			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
+			self.isSecondJump = true
+		end
+	else
+		if self.CharacterMovement:IsFalling() == true then
+			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
+		else
+			self:Jump()
+		end
+		self.isFirstJump = true
+		self:DelayFunc(0.5)
+	end
+end
+
+function BP_Ghost_C:DelayFunc(Induration)
+	coroutine.resume(coroutine.create(
+	function(WorldContectObject,duration)
+	UE4.UKismetSystemLibrary.Delay(WorldContectObject,duration)
+	self.isSecondJump = false
+	end
+	),
+	self,Induration)
+end
+
 return BP_Ghost_C
