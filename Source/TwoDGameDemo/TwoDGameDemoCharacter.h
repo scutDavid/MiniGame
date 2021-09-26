@@ -40,6 +40,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	class UPaperFlipbook* IdleAnimation;
 
+	// The animation to play while jump
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	class UPaperFlipbook* JumpAnimation;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
 	FString Name;
 
