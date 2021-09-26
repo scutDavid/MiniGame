@@ -178,6 +178,7 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XList:clear()
+	self.bMoveRight = nil
 	-- self:StopJumping()
 end
 
