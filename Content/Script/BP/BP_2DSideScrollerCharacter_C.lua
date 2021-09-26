@@ -35,13 +35,12 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 	print("SaveMINISaveGame Success!!!!!!!!!")
 end
 
-function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
+function BP_2DSideScrollerCharacter_C:UpdateMoveRight()
 	if self.bMoveRight == true then
 		self:MoveRight(1)
 	elseif self.bMoveRight == false then
 		self:MoveRight(-1)
 	end
-
 end
 
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
