@@ -41,7 +41,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if self.isForward or self.isBack then
+	if self.isForward or self.isBack and self.bSprintRight == nil then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
 		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
@@ -120,15 +120,15 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	end
 	self.LastUpdateTime = self.CurrentUpdateTime
 
-	if self.bMoveRight and self.bSprintRight then -- 向右冲刺
+	if self.bMoveRight and self.bSprintRight or (self.bMoveRight == false and self.bSprintRight == false) then -- 向右冲刺
 
-		self.AccaAccumulateTime = 0
-		self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
-	elseif self.bMoveRight == false and self.bSprintRight == false then -- 向左冲刺
 
 		self.AccaAccumulateTime = 0
 		self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
 	end
+
+	--if fAxisValue == 1.0 and self.sprintTest == 2 or fAxisValue == -1.0 and self.sprintTest == 1 then 
+
 
 	local inputValue = fAxisValue
 	if self.bMoveRight == true then
@@ -169,13 +169,14 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 
 	if (self.isPreJump ~= self.isJump) then
 		-- print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint, self.isJump)
 	end
 
 	if self.isFirstJump == true then
-		if self.isSecondJump == false then
+		if self.isSecondJump == false and self.canSecondJump == true then
 			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
 			self.isSecondJump = true
+			self.canSecondJump = false
 		end
 	else
 		if self.CharacterMovement:IsFalling() == true then
@@ -184,7 +185,7 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 			self:Jump()
 		end
 		self.isFirstJump = true
-		self:DelayFunc(0.5)
+		self:DelayFunc(0.25)
 	end
 	
 
@@ -194,7 +195,7 @@ function BP_2DSideScrollerCharacter_C:DelayFunc(Induration)
 	coroutine.resume(coroutine.create(
 	function(WorldContectObject,duration)
 	UE4.UKismetSystemLibrary.Delay(WorldContectObject,duration)
-	self.isSecondJump = false
+	self.canSecondJump = true
 	end
 	),
 	self,Induration)
