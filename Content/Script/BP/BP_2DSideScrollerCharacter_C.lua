@@ -45,7 +45,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if self.isForward or self.isBack and self.bSprintRight == nil then
+	if (self.isForward or self.isBack) and self.bSprintRight == nil then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
 		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
@@ -117,34 +117,50 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
 
-function BP_2DSideScrollerCharacter_C:ResetMoveNormal()
-	self.bSprintRight = nil
+function BP_2DSideScrollerCharacter_C:ResetMoveNormal(character,value)
+	character.isSprint = false
+	character.bSprintRight = nil
+	character.bMoveRight = nil
+	character.CharacterMovement.MaxWalkSpeed = 600
+    character:LaunchCharacter(UE4.FVector(value*600,0,0),true,true)
+	character.CharacterMovement.GravityScale = 2
+end
+
+function BP_2DSideScrollerCharacter_C:ResetCanSprint()
+	self.canSprint = true
 end
 
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
+	print("canSprint----------------",self.canSprint)
 	self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
 	if self.LastUpdateTime  then 
 		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
 	end
 	self.LastUpdateTime = self.CurrentUpdateTime
-	
-	if fAxisValue > 0 then  
-		self.bMoveRight = true
-	elseif fAxisValue < 0 then
-		self.bMoveRight = false
-	else
-		self.bMoveRight = nil
+	if self.bSprintRight ==nil then
+		if fAxisValue > 0 then  
+			self.bMoveRight = true
+		elseif fAxisValue < 0 then
+			self.bMoveRight = false
+		else
+			self.bMoveRight = nil
+		end
 	end
 
-	if self.bMoveRight and self.bSprintRight or (self.bMoveRight == false and self.bSprintRight == false) then --冲刺
-		self.CharacterMovement.MaxWalkSpeed = 1800
-		self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.ResetMoveNormal},0.5,false)
-		self.AccaAccumulateTime = 0
-		self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
+	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
+		if self.canSprint == true and self.isFirstJump == true then--冲刺
+			self.CharacterMovement.MaxWalkSpeed = self.sprintSpeed
+			self:LaunchCharacter(UE4.FVector(fAxisValue*self.sprintSpeed,0,0),true,true)
+			self.CharacterMovement.GravityScale = 0
+			self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,function() BP_2DSideScrollerCharacter_C:ResetMoveNormal(self,fAxisValue) end},self.sprintTime,false)
+			self:resetCanSprintFunc(self.sprintInterval)
+			self.AccaAccumulateTime = 0
+			self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
+			self.bMoveRight = nil
+			self.isSprint = true
+			self.canSprint = false 
+		end
 	end
-
-	
-
 
 	local inputValue = fAxisValue
 	if self.bMoveRight == true then
@@ -170,7 +186,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		self.isForward = false
 		self.isBack = false
 		self.AccaAccumulateTime = 0
-	end
+		end
 
 	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
@@ -188,23 +204,31 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint, self.isJump)
 	end
 
-	if self.isFirstJump == true then
-		if self.isSecondJump == false and self.canSecondJump == true then
-			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
-			self.isSecondJump = true
-			self.canSecondJump = false
+	if self.isSprint == false then
+		if self.isFirstJump == true then
+			if self.isSecondJump == false and self.canSecondJump == true then
+				self:LaunchCharacter(UE4.FVector(0,0,self.secondJumpSpeed),false,true)
+				self.isSecondJump = true
+				self.canSecondJump = false
+			end
+		else	
+			self:LaunchCharacter(UE4.FVector(0,0,self.jumpSpeed),false,true)
+			self.isFirstJump = true
+			self:DelayFunc(self.jumpInterval)
 		end
-	else
-		if self.CharacterMovement:IsFalling() == true then
-			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
-		else
-			self:Jump()
-		end
-		self.isFirstJump = true
-		self:DelayFunc(0.25)
 	end
 	
 
+end
+
+function BP_2DSideScrollerCharacter_C:resetCanSprintFunc(Induration)
+	coroutine.resume(coroutine.create(
+	function(WorldContectObject,duration)
+	UE4.UKismetSystemLibrary.Delay(WorldContectObject,duration)
+	self.canSprint = true
+	end
+	),
+	self,Induration)
 end
 
 function BP_2DSideScrollerCharacter_C:DelayFunc(Induration)
@@ -248,33 +272,27 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		-- print("repeat touch FingerId = ",deltamillisec,FingerId,Location.X, Location.Y, Location.Z)
 		-- self.PressTS = 0
 	-- end
-	if Location.X < self.ScreenX/2 - 10 then -- 减10是为了空出之间区域
-		XLeftList:push(Location.X)
-		if XLeftList.length == 3 then
-			if XLeftList[XLeftList.last] - XLeftList[XLeftList.first] > 5 then 
-				print("move right",Location.X, Location.Y)
-				if self.bSprintRight == nil then
-					self.bMoveRight = true
-				end
-			elseif XLeftList[XLeftList.first] - XLeftList[XLeftList.last] > 5 then
-				print("move left",Location.X, Location.Y)
-				if self.bSprintRight == nil then
-					self.bMoveRight = false
+	if self.isSprint == false then
+		if Location.X < self.ScreenX/2 - 10 then -- 减10是为了空出之间区域
+			XLeftList:push(Location.X)
+			if XLeftList.length == 3 then
+				if XLeftList[XLeftList.last] - XLeftList[XLeftList.first] > 5 then 
+					print("move right",Location.X, Location.Y)
+						self.bMoveRight = true
+				elseif XLeftList[XLeftList.first] - XLeftList[XLeftList.last] > 5 then
+					print("move left",Location.X, Location.Y)
+						self.bMoveRight = false
 				end
 			end
-		end
-	elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
-		XRightList:push(Location.X)
-		if XRightList.length == 3 then
-			if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
-				print("sprint right",Location.X, Location.Y)
-				if self.bSprintRight == nil then
+		elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
+			XRightList:push(Location.X)
+			if XRightList.length == 3 and self.bMoveRight ~= nil then
+				if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
+					print("sprint right",Location.X, Location.Y)
 					self.bSprintRight = true
-				end
-			elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 5 then
-				print("sprint left",Location.X, Location.Y)
-				if self.bSprintRight == nil then
-					self.bSprintRight = false
+				elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 5 then
+					print("sprint left",Location.X, Location.Y)
+						self.bSprintRight = false
 				end
 			end
 		end
@@ -292,8 +310,9 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	self.PressTS = 0
 	XLeftList:clear()
 	XRightList:clear()
-	if self.bSprintRight == nil then
+	if self.isSprint == false then
 		self.bMoveRight = nil
+		self.bSprintRight = nil
 	end
 end
 
