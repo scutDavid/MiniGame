@@ -25,10 +25,14 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.isJump = false
 	self.AccaAccumulateTime = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
+	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
+end
+
+function BP_2DSideScrollerCharacter_C:GetScreenSize()
 	self.PC = UE4.UGameplayStatics.GetPlayerController(self, 0)
 	self.ScreenX,self.ScreenY = self.PC:GetViewportSize()
-
-	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
+	print("screen size = ",self.ScreenX,self.ScreenY)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
@@ -213,11 +217,11 @@ end
 
 function BP_2DSideScrollerCharacter_C:TouchStarted(FingerId, Location)
 	-- Jump on any touch
-	if Location.X > self.ScreenX/2 then
+	if Location.X > self.ScreenX/2 + 10 and Location.Y > self.ScreenY /2 + 10 then
 		self:MyJump()
 	end
 	self.PressTS = UE4.UKismetMathLibrary.Now()
-	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
+	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z,self.ScreenX,self.ScreenY)
 	-- self:Jump()
 end
 
@@ -243,7 +247,7 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 				self.bMoveRight = false
 			end
 		end
-	elseif Location.X > self.ScreenX/2 + 10 then -- 加10是为了空出之间区域
+	elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
 		XRightList:push(Location.X)
 		if XRightList.length == 3 then
 			if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
