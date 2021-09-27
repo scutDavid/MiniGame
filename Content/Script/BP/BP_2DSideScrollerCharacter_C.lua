@@ -136,7 +136,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
 	end
 	self.LastUpdateTime = self.CurrentUpdateTime
-	if self.bSprintRight ==nil then
+	if self.isSprint == false and self.bIsControlByMouse == false then
 		if fAxisValue > 0 then  
 			self.bMoveRight = true
 		elseif fAxisValue < 0 then
@@ -145,7 +145,6 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self.bMoveRight = nil
 		end
 	end
-
 	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
 		if self.canSprint == true and self.isFirstJump == true then--冲刺
 			self.CharacterMovement.MaxWalkSpeed = self.sprintSpeed
@@ -255,6 +254,9 @@ function BP_2DSideScrollerCharacter_C:TouchStarted(FingerId, Location)
 	if Location.X > self.ScreenX/2 + 10 and Location.Y > self.ScreenY /2 + 10 then
 		self:MyJump()
 	end
+	if Location.X < self.ScreenX/2 - 10 then
+		self.bIsControlByMouse = true
+	end
 	self.PressTS = UE4.UKismetMathLibrary.Now()
 	print("Begin touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z,self.ScreenX,self.ScreenY)
 	-- self:Jump()
@@ -304,6 +306,9 @@ end
 function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	if Location.X > self.ScreenX/2 then
 		self:MyStopJumping()
+	end
+	if Location.X < self.ScreenX/2 - 10 then
+		self.bIsControlByMouse = false
 	end
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
