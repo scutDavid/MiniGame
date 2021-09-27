@@ -29,6 +29,9 @@ struct FPlayerStateInfo
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
 	bool isJump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	bool isSprint;
 };
 
 

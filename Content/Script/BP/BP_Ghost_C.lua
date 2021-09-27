@@ -102,9 +102,10 @@ end
 
 function BP_Ghost_C:GhostJump()
 	if self.isFirstJump == true then
-		if self.isSecondJump == false then
+		if self.isSecondJump == false and self.canSecondJump == true then
 			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
 			self.isSecondJump = true
+			self.canSecondJump = false
 		end
 	else
 		if self.CharacterMovement:IsFalling() == true then
@@ -113,7 +114,7 @@ function BP_Ghost_C:GhostJump()
 			self:Jump()
 		end
 		self.isFirstJump = true
-		self:DelayFunc(0.5)
+		self:DelayFunc(0.25)
 	end
 end
 
@@ -121,7 +122,7 @@ function BP_Ghost_C:DelayFunc(Induration)
 	coroutine.resume(coroutine.create(
 	function(WorldContectObject,duration)
 	UE4.UKismetSystemLibrary.Delay(WorldContectObject,duration)
-	self.isSecondJump = false
+	self.canSecondJump = true
 	end
 	),
 	self,Induration)
