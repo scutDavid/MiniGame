@@ -131,7 +131,6 @@ function BP_2DSideScrollerCharacter_C:ResetCanSprint()
 end
 
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
-	print("canSprint----------------",self.canSprint)
 	self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
 	if self.LastUpdateTime  then 
 		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
