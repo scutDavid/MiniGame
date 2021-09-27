@@ -117,21 +117,33 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
 
+function BP_2DSideScrollerCharacter_C:ResetMoveNormal()
+	self.bSprintRight = nil
+end
+
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
 	if self.LastUpdateTime  then 
 		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
 	end
 	self.LastUpdateTime = self.CurrentUpdateTime
+	
+	if fAxisValue > 0 then  
+		self.bMoveRight = true
+	elseif fAxisValue < 0 then
+		self.bMoveRight = false
+	else
+		self.bMoveRight = nil
+	end
 
-	if self.bMoveRight and self.bSprintRight or (self.bMoveRight == false and self.bSprintRight == false) then -- 向右冲刺
-
-
+	if self.bMoveRight and self.bSprintRight or (self.bMoveRight == false and self.bSprintRight == false) then --冲刺
+		self.CharacterMovement.MaxWalkSpeed = 1800
+		self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.ResetMoveNormal},0.5,false)
 		self.AccaAccumulateTime = 0
 		self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
 	end
 
-	--if fAxisValue == 1.0 and self.sprintTest == 2 or fAxisValue == -1.0 and self.sprintTest == 1 then 
+	
 
 
 	local inputValue = fAxisValue
@@ -241,10 +253,14 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		if XLeftList.length == 3 then
 			if XLeftList[XLeftList.last] - XLeftList[XLeftList.first] > 5 then 
 				print("move right",Location.X, Location.Y)
-				self.bMoveRight = true
+				if self.bSprintRight == nil then
+					self.bMoveRight = true
+				end
 			elseif XLeftList[XLeftList.first] - XLeftList[XLeftList.last] > 5 then
 				print("move left",Location.X, Location.Y)
-				self.bMoveRight = false
+				if self.bSprintRight == nil then
+					self.bMoveRight = false
+				end
 			end
 		end
 	elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
@@ -252,10 +268,14 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		if XRightList.length == 3 then
 			if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
 				print("sprint right",Location.X, Location.Y)
-				self.bSprintRight = true
+				if self.bSprintRight == nil then
+					self.bSprintRight = true
+				end
 			elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 5 then
 				print("sprint left",Location.X, Location.Y)
-				self.bSprintRight = false
+				if self.bSprintRight == nil then
+					self.bSprintRight = false
+				end
 			end
 		end
 	end
@@ -272,8 +292,9 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	self.PressTS = 0
 	XLeftList:clear()
 	XRightList:clear()
-	self.bMoveRight = nil
-	self.bSprintRight = nil
+	if self.bSprintRight == nil then
+		self.bMoveRight = nil
+	end
 end
 
 return BP_2DSideScrollerCharacter_C
