@@ -52,7 +52,21 @@ function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveHit(HitComponent, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit)
-	if HitNormal.z ~= 0.0 then
+	if HitNormal.Z ~= 0.0 then
+		if Other.bHasBeenHit == false then
+			local movableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/MovableRoad.MovableRoad")
+			local disposableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/DisposableRoad.DisposableRoad")
+			local actorPos = Other:K2_GetActorLocation()
+			if Other:IsA(movableRoadClass) == true then
+				Other.bHasBeenHit = true
+				self:UpdateSaveLevelActorInfo(1,actorPos,Other.TriggerTime)
+				print(" movableRoadClass Hit-------------",HitNormal.Z,Other.TriggerTime)
+			elseif Other:IsA(disposableRoadClass) == true then
+				Other.bHasBeenHit = true
+				self:UpdateSaveLevelActorInfo(2,actorPos,0.0)
+				print(" disposableRoadClass Hit-------------",HitNormal.Z)
+			end
+		end
 		return
 	end
 	local ObjectPath = "PaperSprite'/Game/2DSideScroller/Sprites/Ledge.Ledge'"
@@ -131,18 +145,15 @@ function BP_2DSideScrollerCharacter_C:ResetCanSprint()
 end
 
 function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
-	self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-	if self.LastUpdateTime  then 
-		self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
-	end
-	self.LastUpdateTime = self.CurrentUpdateTime
 	if self.isSprint == false and self.bIsControlByMouse == false then
-		if fAxisValue > 0 then  
-			self.bMoveRight = true
-		elseif fAxisValue < 0 then
-			self.bMoveRight = false
-		else
+		if fAxisValue == 0.0 then
 			self.bMoveRight = nil
+		else
+			if fAxisValue > 0.0 then
+				self.bMoveRight = true
+			else
+				self.bMoveRight = false
+			end
 		end
 	end
 	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
@@ -153,9 +164,9 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,function() BP_2DSideScrollerCharacter_C:ResetMoveNormal(self,fAxisValue) end},self.sprintTime,false)
 			self:resetCanSprintFunc(self.sprintInterval)
 			self.AccaAccumulateTime = 0
+			self.isSprint = true
 			self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
 			self.bMoveRight = nil
-			self.isSprint = true
 			self.canSprint = false 
 		end
 	end
@@ -174,18 +185,24 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 
 	self.isPreForward = self.isForward
 	self.isPreBack = self.isBack
-	if inputValue > 0.0 then
-		self.isForward = true
-		self.isBack = false
-	elseif inputValue < 0.0 then
-		self.isForward = false
-		self.isBack = true
-	else
+	if inputValue == 0.0 then 
 		self.isForward = false
 		self.isBack = false
 		self.AccaAccumulateTime = 0
+	else
+		self.CurrentUpdateTime = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		if self.LastUpdateTime  then 
+			self.AccaAccumulateTime = self.AccaAccumulateTime + self.CurrentUpdateTime - self.LastUpdateTime 
 		end
-
+		self.LastUpdateTime = self.CurrentUpdateTime
+		if inputValue > 0.0 then
+			self.isForward = true
+			self.isBack = false
+		else
+			self.isForward = false
+			self.isBack = true
+		end
+	end
 	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
 		self.AccaAccumulateTime = 0
