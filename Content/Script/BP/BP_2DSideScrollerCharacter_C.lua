@@ -23,6 +23,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	-- print(OriginGameMode)
 	-- print(self.GameMode)
 	self.isJump = false
+	self.isSprint = false
 	self.AccaAccumulateTime = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
@@ -304,13 +305,14 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 			end
 		elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
 			XRightList:push(Location.X)
+			print("bMoveRight = ",self.bMoveRight)
 			if XRightList.length == 3 and self.bMoveRight ~= nil then
 				if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
 					print("sprint right",Location.X, Location.Y)
 					self.bSprintRight = true
 				elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 5 then
 					print("sprint left",Location.X, Location.Y)
-						self.bSprintRight = false
+					self.bSprintRight = false
 				end
 			end
 		end
@@ -324,9 +326,7 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	if Location.X > self.ScreenX/2 then
 		self:MyStopJumping()
 	end
-	if Location.X < self.ScreenX/2 - 10 then
-		self.bIsControlByMouse = false
-	end
+	self.bIsControlByMouse = false
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XLeftList:clear()
