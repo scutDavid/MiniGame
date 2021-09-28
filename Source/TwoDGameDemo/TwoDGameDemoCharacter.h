@@ -44,6 +44,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	class UPaperFlipbook* JumpAnimation;
 
+	// The animation to play while Sprint
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	class UPaperFlipbook* SprintAnimation;
+
+	// ÊÇ·ñ´¦ÓÚ³å´Ì×´Ì¬
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+	bool isSprint;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
 	FString Name;
 

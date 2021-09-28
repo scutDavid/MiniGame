@@ -83,14 +83,20 @@ ATwoDGameDemoCharacter::ATwoDGameDemoCharacter()
 void ATwoDGameDemoCharacter::UpdateAnimation()
 {
 	UPaperFlipbook* DesiredAnimation = nullptr;
-	if (GetCharacterMovement() -> IsFalling()) {
-		DesiredAnimation = JumpAnimation;
+
+	if (isSprint) {
+		DesiredAnimation = SprintAnimation;
 	}
 	else {
-		const FVector PlayerVelocity = GetVelocity();
-		const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
+		if (GetCharacterMovement()->IsFalling()) {
+			DesiredAnimation = JumpAnimation;
+		}
+		else {
+			const FVector PlayerVelocity = GetVelocity();
+			const float PlayerSpeedSqr = PlayerVelocity.SizeSquared();
 
-		DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleAnimation;
+			DesiredAnimation = (PlayerSpeedSqr > 0.0f) ? RunningAnimation : IdleAnimation;
+		}
 	}
 
 	if( GetSprite()->GetFlipbook() != DesiredAnimation 	)
