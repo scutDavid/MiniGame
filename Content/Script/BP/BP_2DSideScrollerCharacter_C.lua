@@ -47,7 +47,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if (self.isForward or self.isBack) and self.bSprintRight == nil then
+	if (self.isForward or self.isBack) and self.bSprintRight == nil and (not self.isDownHill) then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
 		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
@@ -71,18 +71,6 @@ function BP_2DSideScrollerCharacter_C:ReceiveHit(HitComponent, Other, OtherComp,
 			end
 		end
 		return
-	end
-	local ObjectPath = "PaperSprite'/Game/2DSideScroller/Sprites/Ledge.Ledge'"
-	local SuspendedMatter = UE4.LoadObject(ObjectPath)
-    if not SuspendedMatter then
-        print("Suspended matter does not exist!")
-        return
-    end
-	if OtherComp:IsA(UE4.UPaperSpriteComponent.StaticClass()) then
-		if OtherComp.SourceSprite == SuspendedMatter then
-			self.AccaAccumulateTime = 0.0
-			self.CharacterMovement.MaxWalkSpeed = 0.0
-		end
 	end
 end
 
