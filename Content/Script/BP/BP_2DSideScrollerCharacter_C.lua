@@ -50,6 +50,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
 		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
+	self:UpdateCameraLocation()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveHit(HitComponent, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit)
