@@ -84,9 +84,11 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
             local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
             local levelActor = nil
             if levelActorInfo.ActorType == ActorType.MovableRoad then -- respawn 移动板
+                print("respawn 移动板--------------------------------------------")
                 levelActor = self:GetWorld():SpawnActor(movableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
                 levelActor.TriggerTime = levelActorInfo.InteractedTime
             elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
+                print("respawn 一次性板--------------------------------------------")
                 levelActor = self:GetWorld():SpawnActor(disposableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
             end
             if levelActor ~= nil then

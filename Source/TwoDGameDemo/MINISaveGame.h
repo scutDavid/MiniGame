@@ -68,7 +68,7 @@ struct FLevelInfo
 
 	// 玩家状态：<时间，关卡摆放物信息>
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
-	TMap<float, FLevelActorInfo> FLevelActorInfos;
+	TMap<float, FLevelActorInfo> LevelActorInfos;
 };
 
 /**
