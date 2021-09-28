@@ -24,6 +24,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	-- print(self.GameMode)
 	self.isJump = false
 	self.isSprint = false
+	self.bIsControlByMouse = false
 	self.AccaAccumulateTime = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)

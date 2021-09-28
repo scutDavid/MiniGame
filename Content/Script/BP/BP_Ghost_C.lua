@@ -8,7 +8,9 @@
 
 require "UnLua"
 local BP_Ghost_C = Class()
-
+local ActorType = {}
+ActorType.MovableRoad = 1
+ActorType.DisposableRoad = 2
 --function BP_Ghost_C:Initialize(Initializer)
 --end
 
@@ -21,13 +23,15 @@ local BP_Ghost_C = Class()
 -- function BP_Ghost_C:ReceiveEndPlay()
 --     print("ghost over")
 -- end
+local movableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/MovableRoad.MovableRoad")
+local disposableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/DisposableRoad.DisposableRoad")
 
 -- 重写Ghost 回放
 function BP_Ghost_C:ReceiveTick(DeltaSeconds)
     -- print("-------------------",DeltaSeconds)
     self.AccumulateTime = self.AccumulateTime + DeltaSeconds
     
-    if self.timeNewIndex <= self.recordLength then
+    if self.timeNewIndex <= self.playerInfoRecordLength then
         if self.isForward == true then
             self.AccaAccumulateTime = self.AccaAccumulateTime + DeltaSeconds
             local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
@@ -59,9 +63,7 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
                 local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
                 self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
                 self:MoveRight(-1.0)
-            elseif playerStateInfo.isTouchMovableRoad == true then -- respawn 移动板
-
-            elseif playerStateInfo.isTouchDisposableRoad == true then -- respawn 一次性板
+            elseif playerStateInfo.isSprint == true then -- 冲刺
                 
             end
             if playerStateInfo.isJump == true then
@@ -73,6 +75,24 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
                 self:K2_SetActorLocation(UE4.FVector(playerStateInfo.PlayerLocation.X, playerStateInfo.PlayerLocation.Y, playerStateInfo.PlayerLocation.Z))
             end
             self.timeNewIndex = self.timeNewIndex + 1
+        end
+    end
+
+    if self.levelTimeNewIndex <= self.levelActorInfoRecordLength then
+        local curRecordTime= self.levelSaveTimeArray:Get(self.levelTimeNewIndex)
+        if self.AccumulateTime - 1 >= curRecordTime then -- 重生
+            local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
+            local levelActor = nil
+            if levelActorInfo.ActorType == ActorType.MovableRoad then -- respawn 移动板
+                levelActor = self:GetWorld():SpawnActor(movableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+                levelActor.TriggerTime = levelActorInfo.InteractedTime
+            elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
+                levelActor = self:GetWorld():SpawnActor(disposableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+            end
+            if levelActor ~= nil then
+                levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X, levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
+            end
+            self.levelTimeNewIndex = self.levelTimeNewIndex + 1
         end
     end
 end
