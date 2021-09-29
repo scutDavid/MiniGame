@@ -60,13 +60,15 @@ function BP_2DSideScrollerCharacter_C:ReceiveHit(HitComponent, Other, OtherComp,
 			local movableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/MovableRoad.MovableRoad")
 			local disposableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/DisposableRoad.DisposableRoad")
 			local actorPos = Other:K2_GetActorLocation()
+			local ObjectName = UE4.UKismetSystemLibrary.GetObjectName(Other)
 			if Other:IsA(movableRoadClass) == true then
 				Other.bHasBeenHit = true
-				self:UpdateSaveLevelActorInfo(1,actorPos,Other.TriggerTime)
-				print(" movableRoadClass Hit-------------",HitNormal.Z,Other.TriggerTime)
+				self:UpdateSaveLevelActorInfo(1,actorPos,Other.TriggerTime,ObjectName,Other.bLeftToRight,Other.bIsTriggerred)
+				local spritePos = Other:GetSpritePos()
+				print(" movableRoadClass Hit-------------",HitNormal.Z,ObjectName,Other.TriggerTime,spritePos.X,spritePos.Y,spritePos.Z)
 			elseif Other:IsA(disposableRoadClass) == true then
 				Other.bHasBeenHit = true
-				self:UpdateSaveLevelActorInfo(2,actorPos,0.0)
+				self:UpdateSaveLevelActorInfo(2,actorPos,0.0,ObjectName)
 				print(" disposableRoadClass Hit-------------",HitNormal.Z)
 			end
 		end
@@ -77,7 +79,7 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
 function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
-	self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+	self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
@@ -206,10 +208,10 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	self.isJump = true
 
 	if (self.isPreJump ~= self.isJump) then
-		-- print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint, self.isJump)
 	end
-
+	self.isJump = false
 	if self.isSprint == false then
 		if self.isFirstJump == true then
 			if self.isSecondJump == false and self.canSecondJump == true then
@@ -253,7 +255,7 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	self:StopJumping()
 	if (self.isPreJump ~= self.isJump) then
 		-- print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isJump)
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
 	end
 end
 

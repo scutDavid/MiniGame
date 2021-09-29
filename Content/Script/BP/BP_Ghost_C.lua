@@ -49,7 +49,9 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
         if self.AccumulateTime - 1 >= curRecordTime then
             -- print(DeltaSeconds,self.AccumulateTime,curRecordTime)
             local playerStateInfo = self.playerInfo.PlayerStateInfos:Find(curRecordTime)
-            
+            if self.CharacterMovement:IsFalling() == false then
+                self:K2_SetActorLocation(UE4.FVector(playerStateInfo.PlayerLocation.X, playerStateInfo.PlayerLocation.Y, playerStateInfo.PlayerLocation.Z))
+            end
             self.isForward = playerStateInfo.isForward
             self.isBack = playerStateInfo.isBack
 
@@ -57,22 +59,23 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
                 self.AccaAccumulateTime = self.AccaAccumulateTime + DeltaSeconds
                 local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
                 self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+                -- print("Ghost forward-------------------------",DeltaSeconds,self.AccumulateTime,curRecordTime)
                 self:MoveRight(1.0)
             elseif self.isBack == true then
                 self.AccaAccumulateTime = self.AccaAccumulateTime + DeltaSeconds
                 local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
                 self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+                -- print("Ghost back-------------------------",DeltaSeconds,self.AccumulateTime,curRecordTime)
                 self:MoveRight(-1.0)
-            elseif playerStateInfo.isSprint == true then -- 冲刺
-                
+            end
+            if playerStateInfo.isSprint == true then -- 冲刺
+            
             end
             if playerStateInfo.isJump == true then
+                print("Ghost Jump-------------------------",DeltaSeconds,self.AccumulateTime,curRecordTime,self.master.jumpSpeed,self.master.secondJumpSpeed,self.master.jumpInterval)
                 self:GhostJump()
             elseif playerStateInfo.isJump == false then
                 self:StopJumping()
-            end
-            if self.CharacterMovement:IsFalling() == false then
-                self:K2_SetActorLocation(UE4.FVector(playerStateInfo.PlayerLocation.X, playerStateInfo.PlayerLocation.Y, playerStateInfo.PlayerLocation.Z))
             end
             self.timeNewIndex = self.timeNewIndex + 1
         end
@@ -81,20 +84,39 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
     if self.levelTimeNewIndex <= self.levelActorInfoRecordLength then
         local curRecordTime= self.levelSaveTimeArray:Get(self.levelTimeNewIndex)
         if self.AccumulateTime - 1 >= curRecordTime then -- 重生
+            self.levelTimeNewIndex = self.levelTimeNewIndex + 1
             local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
             local levelActor = nil
+            local targetActor = nil
+            local allMovables = UE4.TArray(UE4.AActor)
             if levelActorInfo.ActorType == ActorType.MovableRoad then -- respawn 移动板
-                print("respawn 移动板--------------------------------------------")
-                levelActor = self:GetWorld():SpawnActor(movableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+                -- print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActor.TriggerTime,levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z)
+                UE4.UGameplayStatics.GetAllActorsOfClass(self:GetWorld(), movableRoadClass, allMovables)
+                if allMovables:Length() > 0 then
+                    local allMovableList = allMovables:ToTable()
+                    for i = 1,#allMovableList do
+                        if UE4.UKismetSystemLibrary.GetObjectName(allMovableList[i]) == levelActorInfo.ActorName  then
+                            targetActor = allMovableList[i]
+                        end
+                    end
+                end
+                levelActor = UE4.UCopyUObject.CloneActor(targetActor)
+                levelActor.MovableRoad:SetCollisionProfileName("GhostObject")
+                levelActor.Trigger:SetCollisionProfileName("OverlapOnlyGhost")
                 levelActor.TriggerTime = levelActorInfo.InteractedTime
+                levelActor.bLeftToRight = levelActorInfo.bLeftToRight
+                levelActor.bIsTriggerred = levelActorInfo.bIsTriggerred
+                levelActor:SetSpriteColor()
+                local spritePos = levelActor:GetSpritePos()
+                print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActorInfo.InteractedTime,spritePos.X,spritePos.Y,spritePos.Z)
             elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
                 print("respawn 一次性板--------------------------------------------")
                 levelActor = self:GetWorld():SpawnActor(disposableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
             end
             if levelActor ~= nil then
-                levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X, levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
+                levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
             end
-            self.levelTimeNewIndex = self.levelTimeNewIndex + 1
+            
         end
     end
 end
@@ -144,18 +166,14 @@ end
 function BP_Ghost_C:GhostJump()
 	if self.isFirstJump == true then
 		if self.isSecondJump == false and self.canSecondJump == true then
-			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
+			self:LaunchCharacter(UE4.FVector(0,0,self.master.secondJumpSpeed),false,true)
 			self.isSecondJump = true
 			self.canSecondJump = false
 		end
 	else
-		if self.CharacterMovement:IsFalling() == true then
-			self:LaunchCharacter(UE4.FVector(0,0,1000),false,true)
-		else
-			self:Jump()
-		end
+		self:LaunchCharacter(UE4.FVector(0,0,self.master.jumpSpeed),false,true)
 		self.isFirstJump = true
-		self:DelayFunc(0.25)
+		self:DelayFunc(self.master.jumpInterval)
 	end
 end
 

@@ -58,6 +58,12 @@ struct FLevelActorInfo
 	FVector InteractedLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
 	float InteractedTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	bool bLeftToRight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	bool bIsTriggerred;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	FString ActorName;
 };
 
 // 玩家跑完一轮关卡需要记录的关卡摆放物信息集合
