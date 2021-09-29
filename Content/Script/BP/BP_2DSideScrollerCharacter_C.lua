@@ -220,7 +220,7 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	self.isJump = false
 	if self.isSprint == false then
 		if self.isFirstJump == true then
-			if self.isSecondJump == false and self.canSecondJump == true and self.GameMode:GetLevelIndex() > 0 then
+			if self.isSecondJump == false and self.canSecondJump == true  then --and self.GameMode:GetLevelIndex() > 0
 				self:LaunchCharacter(UE4.FVector(0,0,self.secondJumpSpeed),false,true)
 				self.isSecondJump = true
 				self.canSecondJump = false

@@ -81,44 +81,44 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
         end
     end
 
-    if self.levelTimeNewIndex <= self.levelActorInfoRecordLength then
-        local curRecordTime= self.levelSaveTimeArray:Get(self.levelTimeNewIndex)
-        if self.AccumulateTime - 1 >= curRecordTime then -- 重生
-            self.levelTimeNewIndex = self.levelTimeNewIndex + 1
-            local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
-            local levelActor = nil
-            local targetActor = nil
-            local allMovables = UE4.TArray(UE4.AActor)
-            if levelActorInfo.ActorType == ActorType.MovableRoad then -- respawn 移动板
-                -- print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActor.TriggerTime,levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z)
-                UE4.UGameplayStatics.GetAllActorsOfClass(self:GetWorld(), movableRoadClass, allMovables)
-                if allMovables:Length() > 0 then
-                    local allMovableList = allMovables:ToTable()
-                    for i = 1,#allMovableList do
-                        if UE4.UKismetSystemLibrary.GetObjectName(allMovableList[i]) == levelActorInfo.ActorName  then
-                            targetActor = allMovableList[i]
-                        end
-                    end
-                end
-                levelActor = UE4.UCopyUObject.CloneActor(targetActor)
-                levelActor.MovableRoad:SetCollisionProfileName("GhostObject")
-                levelActor.Trigger:SetCollisionProfileName("OverlapOnlyGhost")
-                levelActor.TriggerTime = levelActorInfo.InteractedTime
-                levelActor.bLeftToRight = levelActorInfo.bLeftToRight
-                levelActor.bIsTriggerred = levelActorInfo.bIsTriggerred
-                levelActor:SetSpriteColor()
-                local spritePos = levelActor:GetSpritePos()
-                print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActorInfo.InteractedTime,spritePos.X,spritePos.Y,spritePos.Z)
-            elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
-                print("respawn 一次性板--------------------------------------------")
-                levelActor = self:GetWorld():SpawnActor(disposableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
-            end
-            if levelActor ~= nil then
-                levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
-            end
+    -- if self.levelTimeNewIndex <= self.levelActorInfoRecordLength then
+    --     local curRecordTime= self.levelSaveTimeArray:Get(self.levelTimeNewIndex)
+    --     if self.AccumulateTime - 1 >= curRecordTime then -- 重生
+    --         self.levelTimeNewIndex = self.levelTimeNewIndex + 1
+    --         local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
+    --         local levelActor = nil
+    --         local targetActor = nil
+    --         local allMovables = UE4.TArray(UE4.AActor)
+    --         if levelActorInfo.ActorType == ActorType.MovableRoad then -- respawn 移动板
+    --             -- print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActor.TriggerTime,levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z)
+    --             UE4.UGameplayStatics.GetAllActorsOfClass(self:GetWorld(), movableRoadClass, allMovables)
+    --             if allMovables:Length() > 0 then
+    --                 local allMovableList = allMovables:ToTable()
+    --                 for i = 1,#allMovableList do
+    --                     if UE4.UKismetSystemLibrary.GetObjectName(allMovableList[i]) == levelActorInfo.ActorName  then
+    --                         targetActor = allMovableList[i]
+    --                     end
+    --                 end
+    --             end
+    --             levelActor = UE4.UCopyUObject.CloneActor(targetActor)
+    --             levelActor.MovableRoad:SetCollisionProfileName("GhostObject")
+    --             levelActor.Trigger:SetCollisionProfileName("OverlapOnlyGhost")
+    --             levelActor.TriggerTime = levelActorInfo.InteractedTime
+    --             levelActor.bLeftToRight = levelActorInfo.bLeftToRight
+    --             levelActor.bIsTriggerred = levelActorInfo.bIsTriggerred
+    --             levelActor:SetSpriteColor()
+    --             local spritePos = levelActor:GetSpritePos()
+    --             print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActorInfo.InteractedTime,spritePos.X,spritePos.Y,spritePos.Z)
+    --         elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
+    --             print("respawn 一次性板--------------------------------------------")
+    --             levelActor = self:GetWorld():SpawnActor(disposableRoadClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+    --         end
+    --         if levelActor ~= nil then
+    --             levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
+    --         end
             
-        end
-    end
+    --     end
+    -- end
 end
 
 --function BP_Ghost_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
