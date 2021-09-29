@@ -85,26 +85,32 @@ end
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
+		self.GameMode.bFirstBorn = true
+		self.GameMode:ResetLevelActors()
 		self:K2_DestroyActor()
 	end
 
 	if (OtherActor:ActorHasTag("Destination")) then
 		self.GameMode:EnterNextLevel()
-		self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
-		print("Reach destination!")
+		if (self.GameMode:GetLevelIndex() > 2) then
+			-- print("End of the Game!")
+		else
+			self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+			print("Reach destination!")
+		end
 	end
 
 	if (OtherActor:ActorHasTag("SavePoint")) then
 		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
-		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 		-- print(SavePointIndexInt)
 		-- print(ObjectName)
 		-- print(NameParseArray:Length())
 		-- print(NameParseArray:Get(1))
 		-- print(NameParseArray:Get(2))
-		print("Save point!")
+		-- print("Save point!")
+		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 	end
 
 	if (OtherActor:ActorHasTag("Trigger")) then
@@ -150,7 +156,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		end
 	end
 	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
-		if self.canSprint == true and self.isFirstJump == true then--冲刺
+		if self.canSprint == true and self.isFirstJump == true and self.GameMode:GetLevelIndex() > 1 then--冲刺
 			self.CharacterMovement.MaxWalkSpeed = self.sprintSpeed
 			self:LaunchCharacter(UE4.FVector(fAxisValue*self.sprintSpeed,0,0),true,true)
 			self.CharacterMovement.GravityScale = 0
@@ -214,7 +220,7 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	self.isJump = false
 	if self.isSprint == false then
 		if self.isFirstJump == true then
-			if self.isSecondJump == false and self.canSecondJump == true then
+			if self.isSecondJump == false and self.canSecondJump == true and self.GameMode:GetLevelIndex() > 0 then
 				self:LaunchCharacter(UE4.FVector(0,0,self.secondJumpSpeed),false,true)
 				self.isSecondJump = true
 				self.canSecondJump = false
