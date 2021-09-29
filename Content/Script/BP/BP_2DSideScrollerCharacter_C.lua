@@ -83,6 +83,8 @@ end
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
+		self.GameMode.bFirstBorn = true
+		self.GameMode:ResetLevelActors()
 		self:K2_DestroyActor()
 	end
 
@@ -96,13 +98,13 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
-		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 		-- print(SavePointIndexInt)
 		-- print(ObjectName)
 		-- print(NameParseArray:Length())
 		-- print(NameParseArray:Get(1))
 		-- print(NameParseArray:Get(2))
-		print("Save point!")
+		-- print("Save point!")
+		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 	end
 
 	if (OtherActor:ActorHasTag("Trigger")) then
