@@ -316,7 +316,9 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	if Location.X > self.ScreenX/2 then
 		self:MyStopJumping()
 	end
-	self.bIsControlByMouse = false
+	if Location.X < self.ScreenX/2 - 10 then
+		self.bIsControlByMouse = false
+	end
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XLeftList:clear()
