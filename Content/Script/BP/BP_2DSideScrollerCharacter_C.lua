@@ -26,6 +26,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.isSprint = false
 	self.bIsControlByMouse = false
 	self.AccaAccumulateTime = 0
+	self.curerentWriteByKeyBoard = false
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
@@ -43,7 +44,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
         UE4.UKismetSystemLibrary.K2_ClearAndInvalidateTimerHandle(self,self.UpdateSaveTaskTimer)
     end
 	self.GameMode:SaveMINISaveGame()
-	print("SaveMINISaveGame Success!!!!!!!!!")
+	print("SaveMINISaveGame Success!!!!!!!!!-------------------",self.playerInfoRecordLen,self.levelActorInfoRecordLen)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
@@ -79,7 +80,10 @@ end
 --function BP_2DSideScrollerCharacter_C:ReceiveAnyDamage(Damage, DamageType, InstigatedBy, DamageCauser)
 --end
 function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
-	self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
+	if self.curerentWriteByKeyBoard == false and self.CharacterMovement:IsFalling() == false then
+		print("-------------------------------------------------UpdateSaveTask",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
+	end
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
@@ -164,6 +168,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self:resetCanSprintFunc(self.sprintInterval)
 			self.AccaAccumulateTime = 0
 			self.isSprint = true
+			self.curerentWriteByKeyBoard = true
 			self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
 			self.bMoveRight = nil
 			self.canSprint = false 
@@ -205,6 +210,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	if (self.isPreForward ~= self.isForward) or (self.isPreBack ~= self.isBack) then
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
 		self.AccaAccumulateTime = 0
+		self.curerentWriteByKeyBoard = true
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
 	end
 end
@@ -214,8 +220,9 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	self.isJump = true
 
 	if (self.isPreJump ~= self.isJump) then
-		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		self.curerentWriteByKeyBoard = true
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint, self.isJump)
+		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 	end
 	self.isJump = false
 	if self.isSprint == false then
@@ -260,7 +267,8 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	self.isJump = false
 	self:StopJumping()
 	if (self.isPreJump ~= self.isJump) then
-		-- print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		self.curerentWriteByKeyBoard = true
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
 	end
 end
