@@ -108,6 +108,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 			-- 摧毁之前鬼影
 			self:DestroyGhost()
 			-- 重生鬼影
+			self.PlayerStateInfos:Clear()
 			self.GameMode:InitMiniSaveGame()
 			self.playerInfoRecordLen = 0
 			self.levelActorInfoRecordLen = 0
