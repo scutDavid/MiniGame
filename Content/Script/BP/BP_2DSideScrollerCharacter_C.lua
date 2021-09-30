@@ -11,6 +11,8 @@ local BP_2DSideScrollerCharacter_C = Class()
 local List = require "FixedLenQueue"
 local XLeftList = List:new(3)
 local XRightList = List:new(3)
+local ghostClassPath = "/Game/2DSideScrollerCPP/Blueprints/BP_Ghost.BP_Ghost"
+local ghostClass = UE4.UClass.Load(ghostClassPath)
 --function BP_2DSideScrollerCharacter_C:Initialize(Initializer)
 --end
 
@@ -27,6 +29,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.bIsControlByMouse = false
 	self.AccaAccumulateTime = 0
 	self.curerentWriteByKeyBoard = false
+	self.GhostBeginTs = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
@@ -43,7 +46,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 		print("cancel timer!!!!!!!!!")
         UE4.UKismetSystemLibrary.K2_ClearAndInvalidateTimerHandle(self,self.UpdateSaveTaskTimer)
     end
-	self.GameMode:SaveMINISaveGame()
+	self.GameMode:SaveMINISaveGame(self.GameMode:GetLevelIndex())
 	print("SaveMINISaveGame Success!!!!!!!!!-------------------",self.playerInfoRecordLen,self.levelActorInfoRecordLen)
 end
 
@@ -81,7 +84,7 @@ end
 --end
 function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
 	if self.curerentWriteByKeyBoard == false and self.CharacterMovement:IsFalling() == false then
-		print("-------------------------------------------------UpdateSaveTask",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		-- print("-------------------------------------------------UpdateSaveTask",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
 	end
 end
@@ -97,9 +100,20 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("Destination")) then
 		self.GameMode:EnterNextLevel()
 		if (self.GameMode:GetLevelIndex() > 2) then
-			-- print("End of the Game!")
+			print("End of the Game!")
 		else
 			self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+			self.GameMode:SaveMINISaveGame(self.GameMode:GetLevelIndex() - 1)
+			print("level --------- SaveMINISaveGame Success!!!!!!!!!-------------------",self.playerInfoRecordLen,self.levelActorInfoRecordLen)
+			-- 摧毁之前鬼影
+			self:DestroyGhost()
+			-- 重生鬼影
+			self.GameMode:InitMiniSaveGame()
+			self.playerInfoRecordLen = 0
+			self.levelActorInfoRecordLen = 0
+			local ghost = self:GetWorld():SpawnActor(ghostClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+			ghost.AccumulateTime = self.GhostBeginTs
+			self.GhostBeginTs = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self) 
 			print("Reach destination!")
 		end
 	end
