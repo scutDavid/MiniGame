@@ -48,6 +48,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	class UPaperFlipbook* SprintAnimation;
 
+	// MoveSpeedFactor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MoveSpeed)
+	float MoveSpeedFactor;
+
 	// ÊÇ·ñ´¦ÓÚ³å´Ì×´Ì¬
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	bool isSprint;

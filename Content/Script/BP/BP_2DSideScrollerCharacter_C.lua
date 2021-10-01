@@ -50,9 +50,13 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if (self.isForward or self.isBack) and self.bSprintRight == nil and (not self.isDownHill) then
+	if (self.isForward or self.isBack) and self.bSprintRight == nil then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
-		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+		if self.isDownHill and (not self.isBack) then
+			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed * self.MoveSpeedFactor
+		else
+			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+		end
 	end
 	self:UpdateCameraLocation()
 end

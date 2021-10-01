@@ -75,6 +75,8 @@ ATwoDGameDemoCharacter::ATwoDGameDemoCharacter()
 	// Enable replication on the Sprite component so animations show up when networked
 	GetSprite()->SetIsReplicated(true);
 	bReplicates = true;
+
+	MoveSpeedFactor = 1.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
