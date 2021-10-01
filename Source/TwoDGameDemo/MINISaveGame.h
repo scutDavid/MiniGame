@@ -32,6 +32,9 @@ struct FPlayerStateInfo
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
 	bool isSprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MINIGame")
+	int CurrentSavePointIdx;
 };
 
 
