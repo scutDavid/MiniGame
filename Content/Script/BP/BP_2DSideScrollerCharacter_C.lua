@@ -50,9 +50,13 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if (self.isForward or self.isBack) and self.bSprintRight == nil and (not self.isDownHill) then
+	if (self.isForward or self.isBack) and self.bSprintRight == nil then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
-		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+		if self.isDownHill and (not self.isBack) then
+			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed * self.MoveSpeedFactor
+		else
+			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
+		end
 	end
 	self:UpdateCameraLocation()
 end
@@ -84,8 +88,8 @@ end
 function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
 	if self.curerentWriteByKeyBoard == false and self.CharacterMovement:IsFalling() == false then
 		-- print("-------------------------------------------------UpdateSaveTask",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
-		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+		self:UpdateSaveGame(timeKey,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
@@ -238,8 +242,8 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self.AccaAccumulateTime = 0
 			self.isSprint = true
 			self.curerentWriteByKeyBoard = true
-			local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-			self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack,self.isSprint, self.isJump,self.CurrentSavePointIdx)
+			local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+			self:UpdateSaveGame(timeKey, self.isBack,self.isSprint, self.isJump,self.CurrentSavePointIdx)
 			self.bMoveRight = nil
 			self.canSprint = false 
 		end
@@ -281,8 +285,8 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
 		self.AccaAccumulateTime = 0
 		self.curerentWriteByKeyBoard = true
-		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+		self:UpdateSaveGame(timeKey,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
@@ -292,8 +296,8 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 
 	if (self.isPreJump ~= self.isJump) then
 		self.curerentWriteByKeyBoard = true
-		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint, self.isJump,self.CurrentSavePointIdx)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+		self:UpdateSaveGame(timeKey,self.isForward, self.isBack, self.isSprint, self.isJump,self.CurrentSavePointIdx)
 		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump,self.CurrentSavePointIdx)
 	end
 	self.isJump = false
@@ -341,8 +345,8 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	if (self.isPreJump ~= self.isJump) then
 		print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self.curerentWriteByKeyBoard = true
-		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+		self:UpdateSaveGame(timeKey,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
