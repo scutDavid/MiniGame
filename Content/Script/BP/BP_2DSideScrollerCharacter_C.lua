@@ -50,13 +50,9 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
-	if (self.isForward or self.isBack) and self.bSprintRight == nil then
+	if (self.isForward or self.isBack) and self.bSprintRight == nil and (not self.isDownHill) then
 		local CurrentSpeed = (self.MoveSpeed):GetFloatValue(self.AccaAccumulateTime)
-		if self.isDownHill and (not self.isBack) then
-			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed * self.MoveSpeedFactor
-		else
-			self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
-		end
+		self.CharacterMovement.MaxWalkSpeed = CurrentSpeed
 	end
 	self:UpdateCameraLocation()
 end
@@ -88,13 +84,15 @@ end
 function BP_2DSideScrollerCharacter_C:UpdateSaveTask()
 	if self.curerentWriteByKeyBoard == false and self.CharacterMovement:IsFalling() == false then
 		-- print("-------------------------------------------------UpdateSaveTask",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
+		self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
 		self.GameMode.bFirstBorn = true
 		self.GameMode:ResetLevelActors()
 		self:K2_DestroyActor()
@@ -143,18 +141,64 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local TriggerIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
 		self.GameMode:UpdateTriggerIndex(true, TriggerIndexInt)
-		-- print(SavePointIndexInt)
-		-- print(ObjectName)
-		-- print(NameParseArray:Length())
-		-- print(NameParseArray:Get(1))
-		-- print(NameParseArray:Get(2))
-		print("----------------------------------------------------Trigger point!")
+		print("----------------------------------------------------begin Trigger point!  ",TriggerIndexInt,self.playerInfoRecordLen)
+		self.CurrentSavePointIdx = TriggerIndexInt
+		local keys = self.PlayerStateInfos:Keys()
+		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
+		while self.playerInfoRecordLen > 0 do
+			local timeKey = keys:Get(self.playerInfoRecordLen)
+			print(self.playerInfoRecordLen,timeKey)
+			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
+			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
+			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx then
+				self.TimeLength = timeKey
+				break
+			else -- 相等,说明之前跑过了,删除
+				self.PlayerStateInfos:Remove(timeKey)
+				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
+			end
+		end
+		print("----------------------------------------------------end Trigger point!  ",TriggerIndexInt,self.playerInfoRecordLen)
 	end
 
 	if (OtherActor:ActorHasTag("Ghost")) then
 		print("Ghost touch player---------------------------------------------------!")
 	end
 end
+
+function BP_2DSideScrollerCharacter_C:dump_map(map)
+    local ret = {}
+    local keys = map:Keys()
+    for i = 1, keys:Length() do
+        local key = keys:Get(i)
+        local value = map:Find(key)
+        table.insert(ret, key .. ":" .. tostring(value))
+    end
+    return "{" .. table.concat(ret, ",") .. "}"
+end
+
+function Three_Pressed()
+
+
+    print("========== TMap ==========")
+    local map = UE4.TMap(0, true)
+    print("New:          ", dump_map(map))
+
+    map:Add(1, true)
+    map:Add(2, false)
+    map:Add(3, true)
+    print("Add:          ", dump_map(map))
+
+    map:Remove(2)
+    print("Remove(2):    ", dump_map(map))
+
+    local value = map:Find(3)
+    print("Find(3):      ", dump_map(map), "Returns:", value)
+
+    map:Clear()
+    print("Clear:        ", dump_map(map))
+end
+
 
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
@@ -194,7 +238,8 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self.AccaAccumulateTime = 0
 			self.isSprint = true
 			self.curerentWriteByKeyBoard = true
-			self:UpdateSaveGame(self.isForward, self.isBack,self.isSprint, self.isJump)
+			local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+			self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack,self.isSprint, self.isJump,self.CurrentSavePointIdx)
 			self.bMoveRight = nil
 			self.canSprint = false 
 		end
@@ -236,7 +281,8 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		-- print("----------------------------------------------------move",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self))
 		self.AccaAccumulateTime = 0
 		self.curerentWriteByKeyBoard = true
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
@@ -246,8 +292,9 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 
 	if (self.isPreJump ~= self.isJump) then
 		self.curerentWriteByKeyBoard = true
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint, self.isJump)
-		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint, self.isJump,self.CurrentSavePointIdx)
+		print("----------------------------------------------------jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump,self.CurrentSavePointIdx)
 	end
 	self.isJump = false
 	if self.isSprint == false then
@@ -294,7 +341,8 @@ function BP_2DSideScrollerCharacter_C:MyStopJumping()
 	if (self.isPreJump ~= self.isJump) then
 		print("-------------------------------------------------stop jump",UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self),self.isPreJump,self.isJump)
 		self.curerentWriteByKeyBoard = true
-		self:UpdateSaveGame(self.isForward, self.isBack, self.isSprint,self.isJump)
+		local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		self:UpdateSaveGame(timeKey - self.TimeOffset,self.isForward, self.isBack, self.isSprint,self.isJump,self.CurrentSavePointIdx)
 	end
 end
 
