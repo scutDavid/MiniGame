@@ -23,8 +23,6 @@ ActorType.DisposableRoad = 2
 -- function BP_Ghost_C:ReceiveEndPlay()
 --     print("ghost over")
 -- end
-local movableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/MovableRoad.MovableRoad")
-local disposableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/DisposableRoad.DisposableRoad")
 
 -- 重写Ghost 回放
 function BP_Ghost_C:ReceiveTick(DeltaSeconds)
@@ -59,9 +57,9 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
         if self.AccumulateTime - 1 >= curRecordTime then
             -- print(DeltaSeconds,self.AccumulateTime,curRecordTime)
             local playerStateInfo = self.playerInfo.PlayerStateInfos:Find(curRecordTime)
-            if self.CharacterMovement:IsFalling() == false then
+            -- if self.CharacterMovement:IsFalling() == false then
                 self:K2_SetActorLocation(UE4.FVector(playerStateInfo.PlayerLocation.X, playerStateInfo.PlayerLocation.Y, playerStateInfo.PlayerLocation.Z))
-            end
+            -- end
             self.isForward = playerStateInfo.isForward
             self.isBack = playerStateInfo.isBack
 
@@ -82,7 +80,7 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
             
             end
             if playerStateInfo.isJump == true then
-                print("Ghost Jump-------------------------",DeltaSeconds,self.AccumulateTime,curRecordTime,self.master.jumpSpeed,self.master.secondJumpSpeed,self.master.jumpInterval)
+                -- print("Ghost Jump-------------------------",DeltaSeconds,self.AccumulateTime,curRecordTime,self.master.jumpSpeed,self.master.secondJumpSpeed,self.master.jumpInterval)
                 self:GhostJump()
             elseif playerStateInfo.isJump == false then
                 self:StopJumping()
@@ -93,6 +91,8 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
 
     if self.levelTimeNewIndex <= self.levelActorInfoRecordLength then
         local curRecordTime= self.levelSaveTimeArray:Get(self.levelTimeNewIndex)
+        local movableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/MovableRoad.MovableRoad")
+        local disposableRoadClass = UE4.UClass.Load("/Game/2DSideScrollerCPP/Blueprints/DisposableRoad.DisposableRoad")
         if self.AccumulateTime - 1 >= curRecordTime then -- 重生
             self.levelTimeNewIndex = self.levelTimeNewIndex + 1
             local levelActorInfo = self.levelInfo.LevelActorInfos:Find(curRecordTime)
@@ -162,7 +162,7 @@ function BP_Ghost_C:ReceiveActorBeginOverlap(OtherActor)
 		print(NameParseArray:Get(1))
 		print(NameParseArray:Get(2))
         print(TriggerIndexInt)
-		print("Trigger point!")
+		print("Ghost ----------------------------------------- Trigger point!")
 	end
 end
 

@@ -11,8 +11,6 @@ local BP_2DSideScrollerCharacter_C = Class()
 local List = require "FixedLenQueue"
 local XLeftList = List:new(3)
 local XRightList = List:new(3)
-local ghostClassPath = "/Game/2DSideScrollerCPP/Blueprints/BP_Ghost.BP_Ghost"
-local ghostClass = UE4.UClass.Load(ghostClassPath)
 --function BP_2DSideScrollerCharacter_C:Initialize(Initializer)
 --end
 
@@ -110,8 +108,11 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 			-- 重生鬼影
 			self.PlayerStateInfos:Clear()
 			self.GameMode:InitMiniSaveGame()
+			self.GameMode.CharacterTriggerIndex = 0 -- 重置玩家triggerIndex
 			self.playerInfoRecordLen = 0
 			self.levelActorInfoRecordLen = 0
+			local ghostClassPath = "/Game/2DSideScrollerCPP/Blueprints/BP_Ghost.BP_Ghost"
+			local ghostClass = UE4.UClass.Load(ghostClassPath)
 			local ghost = self:GetWorld():SpawnActor(ghostClass, UE4.FTransform(), UE4.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
 			ghost.AccumulateTime = self.GhostBeginTs
 			self.GhostBeginTs = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self) 
@@ -142,7 +143,11 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		-- print(NameParseArray:Length())
 		-- print(NameParseArray:Get(1))
 		-- print(NameParseArray:Get(2))
-		print("Trigger point!")
+		print("----------------------------------------------------Trigger point!")
+	end
+
+	if (OtherActor:ActorHasTag("Ghost")) then
+		print("Ghost touch player---------------------------------------------------!")
 	end
 end
 
@@ -349,13 +354,13 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	end
 	if Location.X < self.ScreenX/2 - 10 then
 		self.bIsControlByMouse = false
+		self.bMoveRight = nil
 	end
 	print("Stop touch FingerId = ",FingerId,Location.X, Location.Y, Location.Z)
 	self.PressTS = 0
 	XLeftList:clear()
 	XRightList:clear()
 	if self.isSprint == false then
-		self.bMoveRight = nil
 		self.bSprintRight = nil
 	end
 end
