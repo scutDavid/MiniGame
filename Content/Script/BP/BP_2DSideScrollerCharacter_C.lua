@@ -22,6 +22,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.GameMode = OriginGameMode:Cast(UE4.ABP_MyTwoDGameDemoGameMode_C)
 	-- print(OriginGameMode)
 	-- print(self.GameMode)
+	self.MoveRightFingerId = -1
 	self.isJump = false
 	self.isSprint = false
 	self.bIsControlByMouse = false
@@ -321,6 +322,7 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 		if Location.X < self.ScreenX/2 - 10 then -- 减10是为了空出之间区域
 			XLeftList:push(Location.X)
 			if XLeftList.length == 3 then
+				self.MoveRightFingerId = FingerId
 				if XLeftList[XLeftList.last] - XLeftList[XLeftList.first] > 5 then 
 					print("move right",Location.X, Location.Y)
 						self.bMoveRight = true
@@ -329,7 +331,7 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 						self.bMoveRight = false
 				end
 			end
-		elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 then -- 加10是为了空出之间区域
+		elseif Location.X > self.ScreenX/2 + 10 and Location.Y < self.ScreenY /2 - 10 and FingerId ~= self.MoveRightFingerId then -- 加10是为了空出之间区域 
 			XRightList:push(Location.X)
 			print("bMoveRight = ",self.bMoveRight)
 			if XRightList.length == 3 and self.bMoveRight ~= nil then
@@ -352,7 +354,8 @@ function BP_2DSideScrollerCharacter_C:TouchStopped(FingerId, Location)
 	if Location.X > self.ScreenX/2 then
 		self:MyStopJumping()
 	end
-	if Location.X < self.ScreenX/2 - 10 then
+	if FingerId == self.MoveRightFingerId then
+		self.MoveRightFingerId = -1
 		self.bIsControlByMouse = false
 		self.bMoveRight = nil
 	end
