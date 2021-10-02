@@ -30,6 +30,15 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.curerentWriteByKeyBoard = false
 	self.GhostBeginTs = 0
 	self:K2_SetActorLocation(self.GameMode:GetSavePointPosition())
+	self.PlayerStateInfos = self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos 
+	local keys = self.PlayerStateInfos:Keys()
+	self.playerInfoRecordLen = keys:Length()
+	self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+	if self.playerInfoRecordLen ~= 0 then
+		local timeKey = keys:Get(self.playerInfoRecordLen)
+		self.TimeLength = timeKey
+	end
+	print("Begin self.playerInfoRecordLen = ",self.playerInfoRecordLen,self.TimeLength,self.TimeOffset)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
 end
@@ -45,8 +54,8 @@ function BP_2DSideScrollerCharacter_C:ReceiveEndPlay()
 		print("cancel timer!!!!!!!!!")
         UE4.UKismetSystemLibrary.K2_ClearAndInvalidateTimerHandle(self,self.UpdateSaveTaskTimer)
     end
-	self.GameMode:SaveMINISaveGame(self.GameMode:GetLevelIndex())
-	print("SaveMINISaveGame Success!!!!!!!!!-------------------",self.playerInfoRecordLen,self.levelActorInfoRecordLen)
+	-- self.GameMode:SaveMINISaveGame(self.GameMode:GetLevelIndex())
+	-- print("SaveMINISaveGame Success!!!!!!!!!-------------------",self.playerInfoRecordLen,self.levelActorInfoRecordLen)
 end
 
 function BP_2DSideScrollerCharacter_C:ReceiveTick(DeltaSeconds)
@@ -96,7 +105,27 @@ end
 function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
+		-- 删除无效记录点
+		local keys = self.PlayerStateInfos:Keys()
+		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
 		self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		while self.playerInfoRecordLen > 0 do
+			local timeKey = keys:Get(self.playerInfoRecordLen)
+			-- print(self.playerInfoRecordLen,timeKey)
+			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
+			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
+			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx or self.playerInfoRecordLen == 1 then
+				self.TimeLength = timeKey
+				print("self.TimeLength = ",self.CurrentSavePointIdx,self.TimeLength)
+				break
+			elseif playerStateInfoValue.CurrentSavePointIdx == self.CurrentSavePointIdx then -- 相等,说明之前跑过了,删除
+				self.PlayerStateInfos:Remove(timeKey)
+				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
+			end
+		end
+		self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos = self.PlayerStateInfos
+		-- local keys1 =self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos:Keys()
+		-- print("self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos = ",keys:Length(),self.playerInfoRecordLen)
 		self.GameMode.bFirstBorn = true
 		self.GameMode:ResetLevelActors()
 		self:K2_DestroyActor()
@@ -131,12 +160,34 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local ObjectName = UKismetSystemLibrary.GetObjectName(OtherActor)
 		local NameParseArray = UKismetStringLibrary.ParseIntoArray(ObjectName, "_", true)
 		local SavePointIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
+		
 		-- print(SavePointIndexInt)
 		-- print(ObjectName)
 		-- print(NameParseArray:Length())
 		-- print(NameParseArray:Get(1))
 		-- print(NameParseArray:Get(2))
 		-- print("Save point!")
+		print("----------------------------------------------------begin save point!  ",SavePointIndexInt,self.playerInfoRecordLen)
+		-- 删除无效记录点
+		self.CurrentSavePointIdx = SavePointIndexInt
+		local keys = self.PlayerStateInfos:Keys()
+		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
+		self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		while self.playerInfoRecordLen > 0 do
+			local timeKey = keys:Get(self.playerInfoRecordLen)
+			-- print(self.playerInfoRecordLen,timeKey)
+			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
+			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
+			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx or self.playerInfoRecordLen == 1 then
+				self.TimeLength = timeKey
+				print("self.TimeLength = ",self.CurrentSavePointIdx,self.TimeLength)
+				break
+			else -- 相等,说明之前跑过了,删除
+				self.PlayerStateInfos:Remove(timeKey)
+				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
+			end
+		end
+		print("----------------------------------------------------end Save point!  ",SavePointIndexInt,self.playerInfoRecordLen)
 		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 	end
 
@@ -146,22 +197,24 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		local TriggerIndexInt = UKismetStringLibrary.Conv_StringToInt(NameParseArray:Get(NameParseArray:Length()))
 		self.GameMode:UpdateTriggerIndex(true, TriggerIndexInt)
 		print("----------------------------------------------------begin Trigger point!  ",TriggerIndexInt,self.playerInfoRecordLen)
-		self.CurrentSavePointIdx = TriggerIndexInt
-		local keys = self.PlayerStateInfos:Keys()
-		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
-		while self.playerInfoRecordLen > 0 do
-			local timeKey = keys:Get(self.playerInfoRecordLen)
-			print(self.playerInfoRecordLen,timeKey)
-			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
-			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
-			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx then
-				self.TimeLength = timeKey
-				break
-			else -- 相等,说明之前跑过了,删除
-				self.PlayerStateInfos:Remove(timeKey)
-				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
-			end
-		end
+		-- self.CurrentSavePointIdx = TriggerIndexInt
+		-- local keys = self.PlayerStateInfos:Keys()
+		-- self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
+		-- self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
+		-- while self.playerInfoRecordLen > 0 do
+		-- 	local timeKey = keys:Get(self.playerInfoRecordLen)
+		-- 	-- print(self.playerInfoRecordLen,timeKey)
+		-- 	local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
+		-- 	-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
+		-- 	if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx or self.playerInfoRecordLen == 1 then
+		-- 		self.TimeLength = timeKey
+		-- 		print("self.TimeLength = ",TriggerIndexInt,self.TimeLength)
+		-- 		break
+		-- 	else -- 相等,说明之前跑过了,删除
+		-- 		self.PlayerStateInfos:Remove(timeKey)
+		-- 		self.playerInfoRecordLen = self.playerInfoRecordLen - 1
+		-- 	end
+		-- end
 		print("----------------------------------------------------end Trigger point!  ",TriggerIndexInt,self.playerInfoRecordLen)
 	end
 
