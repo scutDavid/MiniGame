@@ -79,13 +79,10 @@ function BP_2DSideScrollerCharacter_C:ReceiveHit(HitComponent, Other, OtherComp,
 			local ObjectName = UE4.UKismetSystemLibrary.GetObjectName(Other)
 			if Other:IsA(movableRoadClass) == true then
 				Other.bHasBeenHit = true
-				self:UpdateSaveLevelActorInfo(1,actorPos,Other.TriggerTime,ObjectName,Other.bLeftToRight,Other.bIsTriggerred)
+				local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
+				self:UpdateSaveLevelActorInfo(timeKey,1,actorPos,Other.TriggerTime,ObjectName,Other.bLeftToRight,Other.bIsTriggerred)
 				local spritePos = Other:GetSpritePos()
 				print(" movableRoadClass Hit-------------",HitNormal.Z,ObjectName,Other.TriggerTime,spritePos.X,spritePos.Y,spritePos.Z)
-			elseif Other:IsA(disposableRoadClass) == true then
-				Other.bHasBeenHit = true
-				self:UpdateSaveLevelActorInfo(2,actorPos,0.0,ObjectName)
-				print(" disposableRoadClass Hit-------------",HitNormal.Z)
 			end
 		end
 		return

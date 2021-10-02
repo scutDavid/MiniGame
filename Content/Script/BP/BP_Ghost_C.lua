@@ -57,9 +57,9 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
         if self.AccumulateTime - 1 >= curRecordTime then
             -- print(DeltaSeconds,self.AccumulateTime,curRecordTime)
             local playerStateInfo = self.playerInfo.PlayerStateInfos:Find(curRecordTime)
-            -- if self.CharacterMovement:IsFalling() == false then
+            if self.CharacterMovement:IsFalling() == false then
                 self:K2_SetActorLocation(UE4.FVector(playerStateInfo.PlayerLocation.X, playerStateInfo.PlayerLocation.Y, playerStateInfo.PlayerLocation.Z))
-            -- end
+            end
             self.isForward = playerStateInfo.isForward
             self.isBack = playerStateInfo.isBack
 
@@ -118,26 +118,7 @@ function BP_Ghost_C:ReceiveTick(DeltaSeconds)
                 levelActor.bIsTriggerred = levelActorInfo.bIsTriggerred
                 levelActor:SetSpriteColor()
                 local spritePos = levelActor:GetSpritePos()
-                -- print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActorInfo.InteractedTime,spritePos.X,spritePos.Y,spritePos.Z)
-            elseif levelActorInfo.ActorType == ActorType.DisposableRoad then -- respawn 一次性板
-                UE4.UGameplayStatics.GetAllActorsOfClass(self:GetWorld(), disposableRoadClass, allActors)
-                -- print("respawn 一次性板--------------------------------------------",levelActorInfo.ActorName)
-                if allActors:Length() > 0 then
-                    local allDisposableList = allActors:ToTable()
-                    for i = 1,#allDisposableList do
-                        if UE4.UKismetSystemLibrary.GetObjectName(allDisposableList[i]) == levelActorInfo.ActorName  then
-                            targetActor = allDisposableList[i]
-                        end
-                    end
-                end
-                
-                levelActor = UE4.UCopyUObject.CloneActor(targetActor)
-                local ObjectName = UKismetSystemLibrary.GetObjectName(levelActor)
-                -- print("respawn 一次性板--------------------------------------------",ObjectName)
-                levelActor.OneRoad:SetCollisionProfileName("GhostObject")
-                levelActor.Trigger:SetCollisionProfileName("OverlapOnlyGhost")
-                levelActor:SetSpriteColor()
-                local spritePos = levelActor:GetSpritePos()
+                print("respawn 移动板--------------------------------------------",levelActorInfo.ActorName,levelActorInfo.InteractedTime,spritePos.X,spritePos.Y,spritePos.Z)
             end
             if levelActor ~= nil then
                 levelActor:K2_SetActorLocation(UE4.FVector(levelActorInfo.InteractedLocation.X,levelActorInfo.InteractedLocation.Y,levelActorInfo.InteractedLocation.Z))
