@@ -6,9 +6,9 @@
 /NAME:"UE4Editor-UnLuaEditor.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"E:\TwoDGameDemo\Intermediate\Build\Win64\TwoDGameDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.cpp.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Default.rc2.res"
-/OUT:"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\UE4Editor-UnLuaEditor.lib"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\TwoDGameDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.cpp.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Default.rc2.res"
+/OUT:"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\UE4Editor-UnLuaEditor.lib"
 /INCLUDE:IMPLEMENT_MODULE_UnLuaEditor

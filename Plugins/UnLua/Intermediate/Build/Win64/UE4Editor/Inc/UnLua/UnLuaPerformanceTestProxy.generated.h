@@ -14,8 +14,8 @@ struct FVector;
 #endif
 #define UNLUA_UnLuaPerformanceTestProxy_generated_h
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS \
  \
 	DECLARE_FUNCTION(execGetMeshInfo); \
 	DECLARE_FUNCTION(execGetPredictedPositions); \
@@ -33,7 +33,7 @@ struct FVector;
 	DECLARE_FUNCTION(execNOP);
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS_NO_PURE_DECLS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS_NO_PURE_DECLS \
  \
 	DECLARE_FUNCTION(execGetMeshInfo); \
 	DECLARE_FUNCTION(execGetPredictedPositions); \
@@ -51,7 +51,7 @@ struct FVector;
 	DECLARE_FUNCTION(execNOP);
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS_NO_PURE_DECLS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAUnLuaPerformanceTestProxy(); \
 	friend struct Z_Construct_UClass_AUnLuaPerformanceTestProxy_Statics; \
@@ -61,7 +61,7 @@ public: \
 	virtual UObject* _getUObject() const override { return const_cast<AUnLuaPerformanceTestProxy*>(this); }
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS \
 private: \
 	static void StaticRegisterNativesAUnLuaPerformanceTestProxy(); \
 	friend struct Z_Construct_UClass_AUnLuaPerformanceTestProxy_Statics; \
@@ -71,7 +71,7 @@ public: \
 	virtual UObject* _getUObject() const override { return const_cast<AUnLuaPerformanceTestProxy*>(this); }
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_STANDARD_CONSTRUCTORS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AUnLuaPerformanceTestProxy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AUnLuaPerformanceTestProxy) \
@@ -84,7 +84,7 @@ private: \
 public:
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_ENHANCED_CONSTRUCTORS \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AUnLuaPerformanceTestProxy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) { }; \
 private: \
@@ -97,7 +97,7 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AUnLuaPerformanceTestProxy); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AUnLuaPerformanceTestProxy)
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__MeshID() { return STRUCT_OFFSET(AUnLuaPerformanceTestProxy, MeshID); } \
 	FORCEINLINE static uint32 __PPO__MeshName() { return STRUCT_OFFSET(AUnLuaPerformanceTestProxy, MeshName); } \
 	FORCEINLINE static uint32 __PPO__COM() { return STRUCT_OFFSET(AUnLuaPerformanceTestProxy, COM); } \
@@ -106,27 +106,27 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(AUnLuaPerformanceTestProxy); \
 	FORCEINLINE static uint32 __PPO__PredictedPositions() { return STRUCT_OFFSET(AUnLuaPerformanceTestProxy, PredictedPositions); }
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_21_PROLOG
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_GENERATED_BODY_LEGACY \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_21_PROLOG
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_STANDARD_CONSTRUCTORS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_GENERATED_BODY \
+#define MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS_NO_PURE_DECLS \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS_NO_PURE_DECLS \
-	TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_ENHANCED_CONSTRUCTORS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_PRIVATE_PROPERTY_OFFSET \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_SPARSE_DATA \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_RPC_WRAPPERS_NO_PURE_DECLS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_INCLASS_NO_PURE_DECLS \
+	MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h_24_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -134,7 +134,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> UNLUA_API UClass* StaticClass<class AUnLuaPerformanceTestProxy>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h
+#define CURRENT_FILE_ID MiniGame_Plugins_UnLua_Source_UnLua_Private_Tests_UnLuaPerformanceTestProxy_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

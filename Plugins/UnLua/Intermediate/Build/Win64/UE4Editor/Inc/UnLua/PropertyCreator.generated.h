@@ -14,7 +14,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #define UNLUA_PropertyCreator_generated_h
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TwoDGameDemo_Plugins_UnLua_Source_UnLua_Private_ReflectionUtils_PropertyCreator_h
+#define CURRENT_FILE_ID MiniGame_Plugins_UnLua_Source_UnLua_Private_ReflectionUtils_PropertyCreator_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

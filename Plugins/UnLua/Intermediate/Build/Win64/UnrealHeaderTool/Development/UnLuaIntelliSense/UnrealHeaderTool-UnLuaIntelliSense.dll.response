@@ -1,5 +1,5 @@
 /MANIFEST:EMBED
-/MANIFESTINPUT:E:\UE_4.26\Engine\Build\Windows\Resources\Default-Win64.manifest
+/MANIFESTINPUT:"C:\Program Files\Epic Games\UE_4.26\Engine\Build\Windows\Resources\Default-Win64.manifest"
 /NOLOGO
 /DEBUG
 /errorReport:prompt
@@ -18,8 +18,8 @@
 /ignore:4099
 /DELAYLOAD:"d3d12.dll"
 /DELAYLOAD:"DBGHELP.DLL"
-/LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\lib\x64"
-/LIBPATH:"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.2\lib\um\x64"
+/LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\x64"
+/LIBPATH:"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.7.2\lib\um\x64"
 /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.16299.0\ucrt\x64"
 /LIBPATH:"C:\Program Files (x86)\Windows Kits\10\lib\10.0.16299.0\um\x64"
 /NODEFAULTLIB:"LIBCMT"
@@ -32,11 +32,11 @@
 /NODEFAULTLIB:"LIBCP"
 /NODEFAULTLIB:"LIBCD"
 /NODEFAULTLIB:"LIBCPD"
-"E:\TwoDGameDemo\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\UnLuaIntelliSense.cpp.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\Default.rc2.res"
-"E:\UE_4.26\Engine\Intermediate\Build\Win64\UnrealHeaderTool\Development\Core\UnrealHeaderTool-Core.lib"
-"E:\UE_4.26\Engine\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\UnrealHeaderTool-CoreUObject.lib"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\UnLuaIntelliSense.cpp.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\Default.rc2.res"
+"C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UnrealHeaderTool\Development\Core\UnrealHeaderTool-Core.lib"
+"C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\UnrealHeaderTool-CoreUObject.lib"
 "delayimp.lib"
 "rpcrt4.lib"
 "ws2_32.lib"
@@ -60,8 +60,8 @@
 "setupapi.lib"
 "dwmapi.lib"
 "imm32.lib"
-/OUT:"E:\TwoDGameDemo\Plugins\UnLua\Binaries\Win64\UnrealHeaderTool-UnLuaIntelliSense.dll"
-/IMPLIB:"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\UnrealHeaderTool-UnLuaIntelliSense.suppressed.lib"
-/PDB:"E:\TwoDGameDemo\Plugins\UnLua\Binaries\Win64\UnrealHeaderTool-UnLuaIntelliSense.pdb"
+/OUT:"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Binaries\Win64\UnrealHeaderTool-UnLuaIntelliSense.dll"
+/IMPLIB:"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaIntelliSense\UnrealHeaderTool-UnLuaIntelliSense.suppressed.lib"
+/PDB:"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Binaries\Win64\UnrealHeaderTool-UnLuaIntelliSense.pdb"
 /ignore:4078
 /INCLUDE:IMPLEMENT_MODULE_UnLuaIntelliSense

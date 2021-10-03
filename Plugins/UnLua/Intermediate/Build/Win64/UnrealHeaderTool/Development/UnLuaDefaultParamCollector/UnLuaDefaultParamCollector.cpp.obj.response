@@ -28,31 +28,30 @@
 /we4458
 /we4459
 /wd4463
-/wd4668
 /wd4244
 /wd4838
 /I .
-/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLuaDefaultParamCollector\Private
-/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLua\Private
+/I C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Source\UnLuaDefaultParamCollector\Private
+/I C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Source\UnLua\Private
 /I Runtime
 /I Runtime\TraceLog\Public
 /I Runtime\Core\Public
 /I ..\Intermediate\Build\Win64\UnrealHeaderTool\Inc\CoreUObject
 /I Runtime\CoreUObject\Public
-/I E:\TwoDGameDemo\Plugins\UnLua\Source
+/I C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Source
 /I Programs\UnrealHeaderTool\Public
-/I "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\INCLUDE"
-/I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.2\include\um"
+/I "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE"
+/I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.7.2\include\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt"
-/FI"E:\TwoDGameDemo\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h"
-/Yu"E:\TwoDGameDemo\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h"
-/Fp"E:\TwoDGameDemo\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.pch"
-"E:\TwoDGameDemo\Plugins\UnLua\Source\UnLuaDefaultParamCollector\Private\UnLuaDefaultParamCollector.cpp"
-/FI"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\Definitions.UnLuaDefaultParamCollector.h"
-/Fo"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnLuaDefaultParamCollector.cpp.obj"
+/FI"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h"
+/Yu"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h"
+/Fp"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.pch"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Source\UnLuaDefaultParamCollector\Private\UnLuaDefaultParamCollector.cpp"
+/FI"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\Definitions.UnLuaDefaultParamCollector.h"
+/Fo"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnLuaDefaultParamCollector.cpp.obj"
 /TP
 /GR-
 /W4
