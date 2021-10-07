@@ -6,8 +6,8 @@
 /NAME:"UnrealHeaderTool-UnLuaDefaultParamCollector.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"E:\TwoDGameDemo\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnLuaDefaultParamCollector.cpp.obj"
-"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\Default.rc2.res"
-/OUT:"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnrealHeaderTool-UnLuaDefaultParamCollector.lib"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Intermediate\Build\Win64\UnrealHeaderTool\Development\CoreUObject\SharedPCH.CoreUObject.ShadowErrors.h.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnLuaDefaultParamCollector.cpp.obj"
+"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\Default.rc2.res"
+/OUT:"C:\Users\zeyangqi\Desktop\MiniGame11\MiniGame\Plugins\UnLua\Intermediate\Build\Win64\UnrealHeaderTool\Development\UnLuaDefaultParamCollector\UnrealHeaderTool-UnLuaDefaultParamCollector.lib"
 /INCLUDE:IMPLEMENT_MODULE_UnLuaDefaultParamCollector

@@ -32,8 +32,8 @@
 /wd4244
 /wd4838
 /I .
-/I E:\TPSProject\Plugins\UnLua\Source\UnLuaEditor\Private
-/I E:\TPSProject\Plugins\UnLua\Source\UnLua\Private
+/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLuaEditor\Private
+/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLua\Private
 /I Editor\AnimationBlueprintEditor\Private
 /I Runtime
 /I Runtime\TraceLog\Public
@@ -234,9 +234,9 @@
 /I Editor\Kismet\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\ClothingSystemRuntimeInterface
 /I Runtime\ClothingSystemRuntimeInterface\Public
-/I E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Inc\UnLua
-/I E:\TPSProject\Plugins\UnLua\Source
-/I E:\TPSProject\Plugins\UnLua\Source\UnLua\Public
+/I E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Inc\UnLua
+/I E:\TwoDGameDemo\Plugins\UnLua\Source
+/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLua\Public
 /I Editor\MainFrame\Public
 /I Editor\AnimationBlueprintEditor\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\Persona
@@ -246,8 +246,8 @@
 /I Editor\AnimationEditor\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\AdvancedPreviewScene
 /I Editor\AdvancedPreviewScene\Public
-/I E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Inc\UnLuaEditor
-/I E:\TPSProject\Plugins\UnLua\Source\UnLuaEditor\Classes
+/I E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Inc\UnLuaEditor
+/I E:\TwoDGameDemo\Plugins\UnLua\Source\UnLuaEditor\Classes
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf
@@ -277,12 +277,12 @@
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt"
-/FI"E:\TPSProject\Intermediate\Build\Win64\TPSProjectEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
-/Yu"E:\TPSProject\Intermediate\Build\Win64\TPSProjectEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
-/Fp"E:\TPSProject\Intermediate\Build\Win64\TPSProjectEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.pch"
-"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp"
-/FI"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Definitions.UnLuaEditor.h"
-/Fo"E:\TPSProject\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp.obj"
+/FI"E:\TwoDGameDemo\Intermediate\Build\Win64\TwoDGameDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
+/Yu"E:\TwoDGameDemo\Intermediate\Build\Win64\TwoDGameDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h"
+/Fp"E:\TwoDGameDemo\Intermediate\Build\Win64\TwoDGameDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.pch"
+"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp"
+/FI"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Definitions.UnLuaEditor.h"
+/Fo"E:\TwoDGameDemo\Plugins\UnLua\Intermediate\Build\Win64\UE4Editor\Development\UnLuaEditor\Module.UnLuaEditor.gen.cpp.obj"
 /TP
 /GR-
 /W4
