@@ -22,6 +22,10 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	self.GameMode = OriginGameMode:Cast(UE4.ABP_MyTwoDGameDemoGameMode_C)
 	-- print(OriginGameMode)
 	-- print(self.GameMode)
+	--if self.UpdateCostTimer == nil then --开始计时
+	--	self.UpdateCostTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateCostTask},1,true)
+	--end
+	
 	self.MoveRightFingerId = -1
 	self.isJump = false
 	self.isSprint = false
@@ -41,6 +45,16 @@ function BP_2DSideScrollerCharacter_C:ReceiveBeginPlay()
 	print("Begin self.playerInfoRecordLen = ",self.playerInfoRecordLen,self.TimeLength,self.TimeOffset)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.GetScreenSize},0.5,false)
 	self.UpdateSaveTaskTimer = UE4.UKismetSystemLibrary.K2_SetTimerDelegate({self,BP_2DSideScrollerCharacter_C.UpdateSaveTask},0.1,true)
+end
+
+function BP_2DSideScrollerCharacter_C:UpdateCostTask()
+	if self.GameMode.SaveGame.LevelIndex == 0 then
+		self.GameMode.SaveGame.FirstLevelCost = self.GameMode.SaveGame.FirstLevelCost + 1
+
+	elseif self.GameMode.SaveGame.LevelIndex == 1 then
+		self.GameMode.SaveGame.FirstLevelCost = self.GameMode.SaveGame.SecondLevelCost + 1
+
+	end
 end
 
 function BP_2DSideScrollerCharacter_C:GetScreenSize()
@@ -103,33 +117,13 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 	if (OtherActor:ActorHasTag("DeadLedge")) then
 		print("You are dead!")
 		-- 删除无效记录点
-		local keys = self.PlayerStateInfos:Keys()
-		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
-		self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		while self.playerInfoRecordLen > 0 do
-			local timeKey = keys:Get(self.playerInfoRecordLen)
-			-- print(self.playerInfoRecordLen,timeKey)
-			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
-			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
-			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx or self.playerInfoRecordLen == 1 then
-				self.TimeLength = timeKey
-				print("self.TimeLength = ",self.CurrentSavePointIdx,self.TimeLength)
-				break
-			elseif playerStateInfoValue.CurrentSavePointIdx == self.CurrentSavePointIdx then -- 相等,说明之前跑过了,删除
-				self.PlayerStateInfos:Remove(timeKey)
-				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
-			end
-		end
-		self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos = self.PlayerStateInfos
-		-- local keys1 =self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos:Keys()
-		-- print("self.GameMode.MiniSaveGame.PlayerInfo.PlayerStateInfos = ",keys:Length(),self.playerInfoRecordLen)
-		self.GameMode.bFirstBorn = true
-		self.GameMode:ResetLevelActors()
-		self:K2_DestroyActor()
+		--UE4.UGameplayStatics.PlaySound2D(self.DeathSound)
+	    --self:PlayDeathSound()
+		
 	end
 
 	if (OtherActor:ActorHasTag("Destination")) then
-		self.GameMode:EnterNextLevel()
+		--[[ self.GameMode:EnterNextLevel()
 		if (self.GameMode:GetLevelIndex() > 2) then
 			print("End of the Game!")
 		else
@@ -150,7 +144,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 			ghost.AccumulateTime = self.GhostBeginTs
 			self.GhostBeginTs = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self) 
 			print("Reach destination!")
-		end
+		end ]]
 	end
 
 	if (OtherActor:ActorHasTag("SavePoint")) then
@@ -164,27 +158,6 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		-- print(NameParseArray:Get(1))
 		-- print(NameParseArray:Get(2))
 		-- print("Save point!")
-		print("----------------------------------------------------begin save point!  ",SavePointIndexInt,self.playerInfoRecordLen)
-		-- 删除无效记录点
-		self.CurrentSavePointIdx = SavePointIndexInt
-		local keys = self.PlayerStateInfos:Keys()
-		self.playerInfoRecordLen = keys:Length() -- Map自动去重,所以self.playerInfoRecordLen不等于keys:Length()
-		self.TimeOffset = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)
-		while self.playerInfoRecordLen > 0 do
-			local timeKey = keys:Get(self.playerInfoRecordLen)
-			-- print(self.playerInfoRecordLen,timeKey)
-			local playerStateInfoValue = self.PlayerStateInfos:Find(timeKey)
-			-- print("playerStateInfoValue.CurrentSavePointIdx ",playerStateInfoValue.CurrentSavePointIdx)
-			if playerStateInfoValue.CurrentSavePointIdx ~= self.CurrentSavePointIdx or self.playerInfoRecordLen == 1 then
-				self.TimeLength = timeKey
-				print("self.TimeLength = ",self.CurrentSavePointIdx,self.TimeLength)
-				break
-			else -- 相等,说明之前跑过了,删除
-				self.PlayerStateInfos:Remove(timeKey)
-				self.playerInfoRecordLen = self.playerInfoRecordLen - 1
-			end
-		end
-		print("----------------------------------------------------end Save point!  ",SavePointIndexInt,self.playerInfoRecordLen)
 		self.GameMode:UpdateSavePoint(SavePointIndexInt)
 	end
 
@@ -214,45 +187,7 @@ function BP_2DSideScrollerCharacter_C:ReceiveActorBeginOverlap(OtherActor)
 		-- end
 		print("----------------------------------------------------end Trigger point!  ",TriggerIndexInt,self.playerInfoRecordLen)
 	end
-
-	if (OtherActor:ActorHasTag("Ghost")) then
-		print("Ghost touch player---------------------------------------------------!")
-	end
 end
-
-function BP_2DSideScrollerCharacter_C:dump_map(map)
-    local ret = {}
-    local keys = map:Keys()
-    for i = 1, keys:Length() do
-        local key = keys:Get(i)
-        local value = map:Find(key)
-        table.insert(ret, key .. ":" .. tostring(value))
-    end
-    return "{" .. table.concat(ret, ",") .. "}"
-end
-
-function Three_Pressed()
-
-
-    print("========== TMap ==========")
-    local map = UE4.TMap(0, true)
-    print("New:          ", dump_map(map))
-
-    map:Add(1, true)
-    map:Add(2, false)
-    map:Add(3, true)
-    print("Add:          ", dump_map(map))
-
-    map:Remove(2)
-    print("Remove(2):    ", dump_map(map))
-
-    local value = map:Find(3)
-    print("Find(3):      ", dump_map(map), "Returns:", value)
-
-    map:Clear()
-    print("Clear:        ", dump_map(map))
-end
-
 
 --function BP_2DSideScrollerCharacter_C:ReceiveActorEndOverlap(OtherActor)
 --end
@@ -284,6 +219,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 	end
 	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
 		if self.canSprint == true and self.isFirstJump == true and self.GameMode:GetLevelIndex() > 1 then--冲刺
+			self:PlaySprintSound()
 			self.CharacterMovement.MaxWalkSpeed = self.sprintSpeed
 			self:LaunchCharacter(UE4.FVector(fAxisValue*self.sprintSpeed,0,0),true,true)
 			self.CharacterMovement.GravityScale = 0
@@ -354,11 +290,13 @@ function BP_2DSideScrollerCharacter_C:MyJump()
 	if self.isSprint == false then
 		if self.isFirstJump == true then
 			if self.isSecondJump == false and self.canSecondJump == true  and self.GameMode:GetLevelIndex() > 0 then --and self.GameMode:GetLevelIndex() > 0
+				self:PlaySecondJumpSound()
 				self:LaunchCharacter(UE4.FVector(0,0,self.secondJumpSpeed),false,true)
 				self.isSecondJump = true
 				self.canSecondJump = false
 			end
 		else	
+			self:PlayJumpSound()
 			self:LaunchCharacter(UE4.FVector(0,0,self.jumpSpeed),false,true)
 			self.isFirstJump = true
 			self:DelayFunc(self.jumpInterval)
