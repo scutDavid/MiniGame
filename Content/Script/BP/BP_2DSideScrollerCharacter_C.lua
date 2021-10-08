@@ -230,7 +230,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 			self.curerentWriteByKeyBoard = true
 			local timeKey = UE4.UKismetSystemLibrary.GetGameTimeInSeconds(self)- self.TimeOffset + self.TimeLength
 			self:UpdateSaveGame(timeKey, self.isBack,self.isSprint, self.isJump,self.CurrentSavePointIdx)
-			self.bMoveRight = nil
+			--self.bMoveRight = nil
 			self.canSprint = false 
 		end
 	end
