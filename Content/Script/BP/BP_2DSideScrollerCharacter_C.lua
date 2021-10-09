@@ -220,7 +220,7 @@ function BP_2DSideScrollerCharacter_C:MoveRight(fAxisValue)
 		end
 	end
 	if (self.bMoveRight and self.bSprintRight) or (self.bMoveRight == false and self.bSprintRight == false) then 
-		if self.canSprint == true and self.isFirstJump == true and self.GameMode:GetLevelIndex()  then--冲刺
+		if self.canSprint == true and self.isFirstJump == true and self.GameMode:GetLevelIndex() > 1 then--冲刺
 			self:PlaySprintSound()
 			self.CharacterMovement.MaxWalkSpeed = self.sprintSpeed
 			self:LaunchCharacter(UE4.FVector(fAxisValue*self.sprintSpeed,0,0),true,true)
@@ -383,10 +383,10 @@ function BP_2DSideScrollerCharacter_C:TouchRepeat(FingerId, Location)
 			XRightList:push(Location.X)
 			print("bMoveRight = ",self.bMoveRight)
 			if XRightList.length == 3 and self.bMoveRight ~= nil then
-				if XRightList[XRightList.last] - XRightList[XRightList.first] > 5 then 
+				if XRightList[XRightList.last] - XRightList[XRightList.first] > 20 then 
 					print("sprint right",Location.X, Location.Y)
 					self.bSprintRight = true
-				elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 5 then
+				elseif XRightList[XRightList.first] - XRightList[XRightList.last] > 20 then
 					print("sprint left",Location.X, Location.Y)
 					self.bSprintRight = false
 				end
